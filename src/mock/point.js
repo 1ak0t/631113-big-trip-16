@@ -1,3 +1,4 @@
+import dayjs from 'dayjs';
 import {getRandomNumberInt} from '../utils/randomaizer.js';
 
 const EventTypes = [
@@ -52,8 +53,9 @@ const Cities = [
   'Tallinn',
 ];
 
-const offersByType = {
-  'taxi': {
+const offers = [
+  {
+    'type' : 'taxi',
     'offers': [
       {
         'title': 'Upgrade to a business class',
@@ -69,7 +71,8 @@ const offersByType = {
       }
     ]
   },
-  'bus': {
+  {
+    'type': 'bus',
     'offers': [
       {
         'title': 'Top floor',
@@ -81,7 +84,8 @@ const offersByType = {
       }
     ]
   },
-  'train': {
+  {
+    'type': 'train',
     'offers': [
       {
         'title': 'Speed train',
@@ -97,10 +101,12 @@ const offersByType = {
       }
     ]
   },
-  'ship': {
+  {
+    'type': 'ship',
     'offers': []
   },
-  'drive': {
+  {
+    'type': 'drive',
     'offers': [
       {
         'title': 'Driver',
@@ -120,7 +126,8 @@ const offersByType = {
       }
     ]
   },
-  'flight': {
+  {
+    'type': 'flight',
     'offers': [
       {
         'title': 'Buisness class',
@@ -132,7 +139,8 @@ const offersByType = {
       }
     ]
   },
-  'check-in': {
+  {
+    'type': 'check-in',
     'offers': [
       {
         'title': 'Suite',
@@ -156,10 +164,12 @@ const offersByType = {
       }
     ]
   },
-  'sightseeing': {
+  {
+    'type': 'sightseeing',
     'offers': []
   },
-  'restaurant': {
+  {
+    'type': 'restaurant',
     'offers': [
       {
         'title': 'dinner',
@@ -167,7 +177,7 @@ const offersByType = {
       }
     ]
   },
-};
+];
 
 const description = 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras aliquet varius magna, non porta ligula feugiat eget. Fusce tristique felis at fermentum pharetra. Aliquam id orci ut lectus varius viverra. Nullam nunc ex, convallis sed finibus eget, sollicitudin eget ante. Phasellus eros mauris, condimentum sed nibh vitae, sodales efficitur ipsum. Sed blandit, eros vel aliquam faucibus, purus ex euismod diam, eu luctus nunc ante ut dui. Sed sed nisi sed augue convallis suscipit in sed felis. Aliquam erat volutpat. Nunc fermentum tortor ac porta dapibus. In rutrum ac purus sit amet tempus.';
 
@@ -176,7 +186,15 @@ const getRandomArrayElement = (array) => {
   return array[randomIndex];
 };
 
-const getOffers = (type) => (offersByType[type.toLowerCase()].offers);
+const getPointTypes = (types) => {
+  const pointTypes = [];
+  types.forEach((item) => pointTypes.push(item.type));
+  return pointTypes;
+}
+
+const getOffers = (offersDatas, type) => {
+  return offersDatas.filter((offer) => offer['type'] === type)[0].offers;
+};
 
 const getDescription = (text) => {
   const descriptionRandomArray = [];
@@ -190,22 +208,44 @@ const getDescription = (text) => {
 const getPhotos = () => {
   const photos = [];
   for (let i = 1; i <= getRandomNumberInt(1,5); i++) {
-    photos.push(`http://picsum.photos/248/152?r=${getRandomNumberInt(0,100)}`);
+    const photoSpecification = {};
+    photoSpecification.src = `http://picsum.photos/248/152?r=${getRandomNumberInt(0,100)}`;
+    photoSpecification.description = getDescription(description);
+    photos.push(photoSpecification);
   }
   return photos;
 };
 
-export const generatePoint = () => {
-  const eventType = getRandomArrayElement(EventTypes);
-  return {
-    type: eventType,
-    city: getRandomArrayElement(Cities),
-    price: getRandomNumberInt(0, 2000),
-    offers: getOffers(eventType),
-    description: getDescription(description),
-    photos: getPhotos(),
-    isFavorite: Boolean(getRandomNumberInt(0,1)),
-  };
+const makeCityDatalistTemplate = (cities) => {
+  const pointCities = [];
+  cities.forEach((city) => pointCities.push(`<option value="${city}"></option>`));
+  return pointCities.join('');
 };
 
-export {Cities};
+const getDate = () => (dayjs().add(getRandomNumberInt(0,45), 'day').add(getRandomNumberInt(0,24), 'hour'));
+const getSecondDate = (firstDate) => {
+  let secondDate = getDate();
+
+  while (!secondDate.isAfter(firstDate)) {
+    secondDate = getDate();
+  }
+  return secondDate;
+};
+
+export const generatePoint = () => {
+  const eventType = getRandomArrayElement(getPointTypes(offers));
+  return {
+    type: eventType,
+    price: getRandomNumberInt(0, 2000),
+    dateFrom: getDate(),
+    dateTo: getSecondDate(),
+    offers: getOffers(offers ,eventType),
+    destination: {
+      description: getDescription(description),
+      name: getRandomArrayElement(Cities),
+      pictures: getPhotos(),
+    },
+    isFavorite: Boolean(getRandomNumberInt(0,1)),
+    cityList: makeCityDatalistTemplate(Cities),
+  };
+};

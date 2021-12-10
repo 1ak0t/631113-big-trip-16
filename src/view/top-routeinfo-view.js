@@ -2,7 +2,7 @@ const createRouteInfoTemplate = (points) => {
   const tripCities = [];
   let tripTotalPrice = 0;
   points.forEach((point) => {
-    tripCities.push(point.city);
+    tripCities.push(point.destination.name);
     tripTotalPrice += point.price;
   });
 

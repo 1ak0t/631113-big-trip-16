@@ -8,9 +8,9 @@ import {createEventTemplate} from './view/event-view.js';
 import {createAndInsert} from './utils/create-and-insert.js';
 import {generatePoint} from './mock/point.js';
 
-const TASK_COUNT = 15;
+const POINT_COUNT = 15;
 
-const points = Array.from({length: TASK_COUNT},generatePoint);
+const points = Array.from({length: POINT_COUNT},generatePoint);
 
 const mainTripElement = document.querySelector('.trip-main');
 const navigationElement = mainTripElement.querySelector('.trip-controls__navigation');
@@ -28,7 +28,7 @@ const tripEventsListContainerElement = document.querySelector('.trip-events__lis
 
 renderTemplate(tripEventsListContainerElement, createSortBlockTemplate(), RenderPosition.BEFORE_BEGIN);
 renderTemplate(tripEventsListContainerElement, createEventEditTemplate(points[0]), RenderPosition.BEFORE_END);
-for (let i = 1; i < TASK_COUNT; i++) {
+for (let i = 1; i < POINT_COUNT; i++) {
   renderTemplate(tripEventsListContainerElement, createEventTemplate(points[i]),RenderPosition.BEFORE_END);
 }
 

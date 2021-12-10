@@ -1,39 +1,10 @@
-import {Cities} from '../mock/point.js';
+import {makePhotosListTemplate, makeOffersListTemplate, isPhotos, isOffers} from '../utils/utils';
+import dayjs from 'dayjs';
 
-const createEventEditTemplate = (points) => {
-  const {type, city, price, offers, description, photos} = points;
-  const makeCityDatalist = (cityList) => {
-    const citiesArray = [];
-    cityList.forEach((el) => citiesArray.push(`<option value="${el}"></option>`));
-    return citiesArray.join('\n');
-  };
-  const isOffers = offers.length > 0 ? 'event__section  event__section--offers' : 'event__section  event__section--offers visually-hidden';
-
-  const makeOffersList = (offerList) => {
-    const offersArray = [];
-    offerList.forEach((el) => offersArray.push(`
-      <div class="event__offer-selector">
-        <input class="event__offer-checkbox  visually-hidden" id="event-offer-luggage-1" type="checkbox" name="event-offer-luggage">
-        <label class="event__offer-label" for="event-offer-luggage-1">
-          <span class="event__offer-title">${el.title}</span>
-          &plus;&euro;&nbsp;
-          <span class="event__offer-price">${el.price}</span>
-        </label>
-      </div>`));
-    return offersArray.join('\n');
-  };
-
-  const isPhotos = photos.length > 0 ? 'event__photos-container' : 'event__photos-container visually-hidden';
-
-  const makePhotosList = (photosList) => {
-    if (photos.length > 0) {
-      const photosArray = [];
-      photosList.forEach((el) => photosArray.push(`<img class="event__photo" src="${el}" alt="Event photo">`));
-      return photosArray.join('\n');
-    } else {
-      return '';
-    }
-  };
+const createEventEditTemplate = (point) => {
+  const {type, destination, price, offers, cityList, dateFrom, dateTo} = point;
+  const dateStart = dateFrom.format('DD/MM/YY HH:mm');
+  const dateEnd = dateTo.format('DD/MM/YY HH:mm');
 
   return `<li class="trip-events__item">
     <form class="event event--edit" action="#" method="post">
@@ -101,18 +72,18 @@ const createEventEditTemplate = (points) => {
           <label class="event__label  event__type-output" for="event-destination-1">
             ${type}
           </label>
-          <input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" value="${city}" list="destination-list-1">
+          <input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" value="${destination.name}" list="destination-list-1">
           <datalist id="destination-list-1">
-            ${makeCityDatalist(Cities)}
+            ${cityList}
           </datalist>
         </div>
 
         <div class="event__field-group  event__field-group--time">
           <label class="visually-hidden" for="event-start-time-1">From</label>
-          <input class="event__input  event__input--time" id="event-start-time-1" type="text" name="event-start-time" value="18/03/19 12:25">
+          <input class="event__input  event__input--time" id="event-start-time-1" type="text" name="event-start-time" value="${dateStart}">
           &mdash;
           <label class="visually-hidden" for="event-end-time-1">To</label>
-          <input class="event__input  event__input--time" id="event-end-time-1" type="text" name="event-end-time" value="18/03/19 13:35">
+          <input class="event__input  event__input--time" id="event-end-time-1" type="text" name="event-end-time" value="${dateEnd}">
         </div>
 
         <div class="event__field-group  event__field-group--price">
@@ -130,20 +101,20 @@ const createEventEditTemplate = (points) => {
         </button>
       </header>
       <section class="event__details">
-        <section class="${isOffers}">
+        <section class="${isOffers(offers)}">
           <h3 class="event__section-title  event__section-title--offers">Offers</h3>
 
           <div class="event__available-offers">
-            ${makeOffersList(offers)}
+            ${makeOffersListTemplate(offers)}
           </div>
         </section>
 
         <section class="event__section  event__section--destination">
           <h3 class="event__section-title  event__section-title--destination">Destination</h3>
-          <p class="event__destination-description">${description}</p>
-          <div class="${isPhotos}">
+          <p class="event__destination-description">${destination.description}</p>
+          <div class="${isPhotos(destination.pictures)}">
             <div class="event__photos-tape">
-              ${makePhotosList(photos)}
+              ${makePhotosListTemplate(destination.pictures)}
             </div>
           </div>
         </section>
