@@ -1,18 +1,6 @@
 import dayjs from 'dayjs';
 import {getRandomNumberInt} from './randomaizer.js';
 
-const EventTypes = [
-  'Taxi',
-  'Bus',
-  'Train',
-  'Ship',
-  'Drive',
-  'Flight',
-  'Check-In',
-  'Sightseeing',
-  'restaurant'
-];
-
 const Cities = [
   'Vienna',
   'Tirana',
@@ -190,11 +178,9 @@ const getPointTypes = (types) => {
   const pointTypes = [];
   types.forEach((item) => pointTypes.push(item.type));
   return pointTypes;
-}
-
-const getOffers = (offersDatas, type) => {
-  return offersDatas.filter((offer) => offer['type'] === type)[0].offers;
 };
+
+const getOffers = (offersDatas, type) => offersDatas.filter((offer) => offer['type'] === type)[0].offers;
 
 const getDescription = (text) => {
   const descriptionRandomArray = [];
