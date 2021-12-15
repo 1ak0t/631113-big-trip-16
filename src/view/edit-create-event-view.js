@@ -1,5 +1,4 @@
-import {makePhotosListTemplate, makeOffersListTemplate, isPhotos, isOffers} from '../utils/utils';
-import dayjs from 'dayjs';
+import {makePhotosListTemplate, makeOffersListTemplate, checkAvailablePhotos, checkAvailableOffers} from '../utils/utils';
 
 const createEventEditTemplate = (point) => {
   const {type, destination, price, offers, cityList, dateFrom, dateTo} = point;
@@ -12,7 +11,7 @@ const createEventEditTemplate = (point) => {
         <div class="event__type-wrapper">
           <label class="event__type  event__type-btn" for="event-type-toggle-1">
             <span class="visually-hidden">Choose event type</span>
-            <img class="event__type-icon" width="17" height="17" src="img/icons/${type.toLowerCase()}.png" alt="Event type icon">
+            <img class="event__type-icon" width="17" height="17" src="img/icons/${type}.png" alt="Event type icon">
           </label>
           <input class="event__type-toggle  visually-hidden" id="event-type-toggle-1" type="checkbox">
 
@@ -101,7 +100,7 @@ const createEventEditTemplate = (point) => {
         </button>
       </header>
       <section class="event__details">
-        <section class="${isOffers(offers)}">
+        <section class="${checkAvailableOffers(offers)}">
           <h3 class="event__section-title  event__section-title--offers">Offers</h3>
 
           <div class="event__available-offers">
@@ -112,7 +111,7 @@ const createEventEditTemplate = (point) => {
         <section class="event__section  event__section--destination">
           <h3 class="event__section-title  event__section-title--destination">Destination</h3>
           <p class="event__destination-description">${destination.description}</p>
-          <div class="${isPhotos(destination.pictures)}">
+          <div class="${checkAvailablePhotos(destination.pictures)}">
             <div class="event__photos-tape">
               ${makePhotosListTemplate(destination.pictures)}
             </div>

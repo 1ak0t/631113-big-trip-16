@@ -5,7 +5,7 @@ import {createFilterTemplate} from './view/filter-view.js';
 import {createSortBlockTemplate} from './view/sort-view.js';
 import {createEventEditTemplate} from './view/edit-create-event-view.js';
 import {createEventTemplate} from './view/event-view.js';
-import {createAndInsert} from './utils/create-and-insert.js';
+import {createAndInsertElement} from './utils/create-and-insert-element.js';
 import {generatePoint} from './mock/point.js';
 
 const POINT_COUNT = 15;
@@ -22,7 +22,7 @@ renderTemplate(filterElement, createFilterTemplate(), RenderPosition.BEFORE_END)
 
 const tripEventsContainerElement = document.querySelector('.trip-events');
 
-createAndInsert('ul', tripEventsContainerElement, 'trip-events__list');
+createAndInsertElement('ul', tripEventsContainerElement, 'trip-events__list');
 
 const tripEventsListContainerElement = document.querySelector('.trip-events__list');
 

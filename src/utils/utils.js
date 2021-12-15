@@ -13,9 +13,9 @@ const makeOffersListTemplate = (offers) => {
   return pointOffers.join('');
 };
 
-const isOffers = (offers) => (offers.length > 0 ? 'event__section  event__section--offers' : 'event__section  event__section--offers visually-hidden');
+const checkAvailableOffers = (offers) => offers.length > 0 ? 'event__section  event__section--offers' : 'event__section  event__section--offers visually-hidden';
 
-const isPhotos = (photos) => (photos.length > 0 ? 'event__photos-container' : 'event__photos-container visually-hidden');
+const checkAvailablePhotos = (photos) => photos.length > 0 ? 'event__photos-container' : 'event__photos-container visually-hidden';
 
 const makePhotosListTemplate = (photos) => {
   if (photos.length > 0) {
@@ -25,4 +25,4 @@ const makePhotosListTemplate = (photos) => {
   }
 };
 
-export {makePhotosListTemplate, makeOffersListTemplate, isPhotos, isOffers};
+export {makePhotosListTemplate, makeOffersListTemplate, checkAvailablePhotos, checkAvailableOffers};

@@ -1,5 +1,5 @@
 import dayjs from 'dayjs';
-import {getRandomNumberInt} from '../utils/randomaizer.js';
+import {getRandomNumberInt} from './randomaizer.js';
 
 const EventTypes = [
   'Taxi',
