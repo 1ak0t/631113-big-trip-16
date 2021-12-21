@@ -1,3 +1,5 @@
+import {createElement} from '../render';
+
 const createSortBlockTemplate = () => (
   `<form class="trip-events__trip-sort  trip-sort" action="#" method="get">
     <div class="trip-sort__item  trip-sort__item--day">
@@ -27,4 +29,22 @@ const createSortBlockTemplate = () => (
   </form>`
 );
 
-export {createSortBlockTemplate};
+export default class SortView {
+  #element = null;
+
+  get element() {
+    if (!this.#element) {
+      this.#element = createElement(this.template);
+    }
+
+    return this.#element;
+  }
+
+  get template() {
+    return createSortBlockTemplate();
+  }
+
+  removeElement() {
+    this.#element = null;
+  }
+}

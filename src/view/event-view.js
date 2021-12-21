@@ -1,4 +1,5 @@
 import {getRandomNumberInt} from '../mock/randomaizer.js';
+import {createElement} from '../render';
 
 const createEventTemplate = (point) => {
   const {type, destination, price, offers, isFavorite, dateFrom, dateTo} = point;
@@ -53,4 +54,28 @@ const createEventTemplate = (point) => {
     </div>
   </li>`;
 };
-export {createEventTemplate};
+
+export default class EventView {
+  #element = null;
+  #point = null;
+
+  constructor(point) {
+    this.#point = point;
+  }
+
+  get element() {
+    if (!this.#element) {
+      this.#element = createElement(this.template);
+    }
+
+    return this.#element;
+  }
+
+  get template() {
+    return createEventTemplate(this.#point);
+  }
+
+  removeElement() {
+    this.#element = null;
+  }
+}

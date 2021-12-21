@@ -1,3 +1,5 @@
+import {createElement} from '../render';
+
 const createRouteInfoTemplate = (points) => {
   const tripCities = [];
   let tripTotalPrice = 0;
@@ -19,4 +21,27 @@ const createRouteInfoTemplate = (points) => {
   </section>`;
 };
 
-export {createRouteInfoTemplate};
+export default class TopRouteInfoView {
+  #element = null;
+  #points = null;
+
+  constructor(points) {
+    this.#points = points;
+  }
+
+  get element() {
+    if (!this.#element) {
+      this.#element = createElement(this.template);
+    }
+
+    return this.#element;
+  }
+
+  get template() {
+    return createRouteInfoTemplate(this.#points);
+  }
+
+  removeElement() {
+    this.#element = null;
+  }
+}

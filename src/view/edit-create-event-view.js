@@ -1,4 +1,5 @@
 import {makePhotosListTemplate, makeOffersListTemplate, checkAvailablePhotos, checkAvailableOffers} from '../utils/utils';
+import {createElement} from '../render';
 
 const createEventEditTemplate = (point) => {
   const {type, destination, price, offers, cityList, dateFrom, dateTo} = point;
@@ -122,4 +123,27 @@ const createEventEditTemplate = (point) => {
   </li>`;
 };
 
-export {createEventEditTemplate};
+export default class EditCreateEventView {
+  #element = null;
+  #point = null;
+
+  constructor(point) {
+    this.#point = point;
+  }
+
+  get element() {
+    if (!this.#element) {
+      this.#element = createElement(this.template);
+    }
+
+    return this.#element;
+  }
+
+  get template() {
+    return createEventEditTemplate(this.#point);
+  }
+
+  removeElement() {
+    this.#element = null;
+  }
+}
