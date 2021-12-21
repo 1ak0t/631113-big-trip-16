@@ -18,13 +18,14 @@ const render = (container, element, place) => {
       break;
     case RenderPosition.AFTER_END:
       container.after(element);
+      break;
   }
 };
 
 const createElement = (template) => {
   const newElement = document.createElement('div');
   newElement.innerHTML = template;
-  return newElement.firstChild;
+  return newElement.firstElementChild;
 };
 
 export {RenderPosition, createElement, render};
