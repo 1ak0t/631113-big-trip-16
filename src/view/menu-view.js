@@ -26,5 +26,3 @@ export default class MenuView {
     this.#element = null;
   }
 }
-
-export {createTopMenuTemplate};
