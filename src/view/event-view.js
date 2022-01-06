@@ -1,5 +1,5 @@
 import {getRandomNumberInt} from '../mock/randomaizer.js';
-import {createElement} from '../render';
+import AbstractView from './abstract-view';
 
 const createEventTemplate = (point) => {
   const {type, destination, price, offers, isFavorite, dateFrom, dateTo} = point;
@@ -55,27 +55,24 @@ const createEventTemplate = (point) => {
   </li>`;
 };
 
-export default class EventView {
-  #element = null;
+export default class EventView extends AbstractView{
   #point = null;
 
   constructor(point) {
+    super();
     this.#point = point;
-  }
-
-  get element() {
-    if (!this.#element) {
-      this.#element = createElement(this.template);
-    }
-
-    return this.#element;
   }
 
   get template() {
     return createEventTemplate(this.#point);
   }
 
-  removeElement() {
-    this.#element = null;
+  setEditClickHandler = (callback) => {
+    this._callback.editClick = callback;
+    this.element.querySelector('.event__rollup-btn').addEventListener('click', this.#editClickHandler);
+  }
+
+  #editClickHandler = () => {
+    this._callback.editClick();
   }
 }

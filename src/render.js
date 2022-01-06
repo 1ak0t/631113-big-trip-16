@@ -1,3 +1,5 @@
+import AbstractView from './view/abstract-view';
+
 const RenderPosition = {
   BEFORE_BEGIN: 'beforebegin',
   AFTER_BEGIN: 'afterbegin',
@@ -6,18 +8,22 @@ const RenderPosition = {
 };
 
 const render = (container, element, place) => {
+
+  const parent = container instanceof AbstractView ? container.element : container;
+  const child = element instanceof AbstractView ? element.element : element;
+
   switch (place) {
     case RenderPosition.BEFORE_BEGIN:
-      container.before(element);
+      parent.before(child);
       break;
     case RenderPosition.AFTER_BEGIN:
-      container.prepend(element);
+      parent.prepend(child);
       break;
     case RenderPosition.BEFORE_END:
-      container.append(element);
+      parent.append(child);
       break;
     case RenderPosition.AFTER_END:
-      container.after(element);
+      parent.after(child);
       break;
   }
 };
@@ -28,4 +34,13 @@ const createElement = (template) => {
   return newElement.firstElementChild;
 };
 
-export {RenderPosition, createElement, render};
+const replace = (newElement, oldElement) => {
+  const newChild = newElement instanceof AbstractView ? newElement.element : newElement;
+  const oldChild = oldElement instanceof AbstractView ? oldElement.element : oldElement;
+
+  const parent = oldChild.parentElement;
+
+  parent.replaceChild(newChild, oldChild);
+};
+
+export {RenderPosition, createElement, render, replace};

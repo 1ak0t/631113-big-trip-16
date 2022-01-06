@@ -1,5 +1,5 @@
 import {makePhotosListTemplate, makeOffersListTemplate, checkAvailablePhotos, checkAvailableOffers} from '../utils/utils';
-import {createElement} from '../render';
+import AbstractView from './abstract-view';
 
 const createEventEditTemplate = (point) => {
   const {type, destination, price, offers, cityList, dateFrom, dateTo} = point;
@@ -123,27 +123,34 @@ const createEventEditTemplate = (point) => {
   </li>`;
 };
 
-export default class EditCreateEventView {
-  #element = null;
+export default class EditCreateEventView extends AbstractView{
   #point = null;
 
   constructor(point) {
+    super();
     this.#point = point;
-  }
-
-  get element() {
-    if (!this.#element) {
-      this.#element = createElement(this.template);
-    }
-
-    return this.#element;
   }
 
   get template() {
     return createEventEditTemplate(this.#point);
   }
 
-  removeElement() {
-    this.#element = null;
+  setCloseClickHandler = (callback) => {
+    this._callback.closeClick = callback;
+    this.element.querySelector('.event__rollup-btn').addEventListener('click', this.#closeClickHandler);
+  }
+
+  setSubmitFormHandler = (callback) => {
+    this._callback.submitClick = callback;
+    this.element.querySelector('form').addEventListener('submit', this.#submitFromHandler);
+  }
+
+  #closeClickHandler = () => {
+    this._callback.closeClick();
+  }
+
+  #submitFromHandler = (evt) => {
+    evt.preventDefault();
+    this._callback.submitClick();
   }
 }
