@@ -1,5 +1,6 @@
 import dayjs from 'dayjs';
 import {getRandomNumberInt} from './randomaizer.js';
+import {nanoid} from 'nanoid';
 
 const Cities = [
   'Vienna',
@@ -221,6 +222,7 @@ const getSecondDate = (firstDate) => {
 export const generatePoint = () => {
   const eventType = getRandomArrayElement(getPointTypes(offers));
   return {
+    id: nanoid(),
     type: eventType,
     price: getRandomNumberInt(0, 2000),
     dateFrom: getDate(),

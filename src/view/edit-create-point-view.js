@@ -123,7 +123,7 @@ const createEventEditTemplate = (point) => {
   </li>`;
 };
 
-export default class EditCreateEventView extends AbstractView{
+export default class EditCreatePointView extends AbstractView{
   #point = null;
 
   constructor(point) {

@@ -55,7 +55,7 @@ const createEventTemplate = (point) => {
   </li>`;
 };
 
-export default class EventView extends AbstractView{
+export default class PointView extends AbstractView{
   #point = null;
 
   constructor(point) {
@@ -72,7 +72,16 @@ export default class EventView extends AbstractView{
     this.element.querySelector('.event__rollup-btn').addEventListener('click', this.#editButtonClickHandler);
   }
 
+  setLikeClickHandler = (callback) => {
+    this._callback.likeClick = callback;
+    this.element.querySelector('.event__favorite-btn').addEventListener('click', this.#likeClickHandler);
+  }
+
   #editButtonClickHandler = () => {
     this._callback.editClick();
+  }
+
+  #likeClickHandler = () => {
+    this._callback.likeClick();
   }
 }
