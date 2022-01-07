@@ -137,19 +137,19 @@ export default class EditCreateEventView extends AbstractView{
 
   setCloseClickHandler = (callback) => {
     this._callback.closeClick = callback;
-    this.element.querySelector('.event__rollup-btn').addEventListener('click', this.#closeClickHandler);
+    this.element.querySelector('.event__rollup-btn').addEventListener('click', this.#closeButtonClickHandler);
   }
 
   setSubmitFormHandler = (callback) => {
     this._callback.submitClick = callback;
-    this.element.querySelector('form').addEventListener('submit', this.#submitFromHandler);
+    this.element.querySelector('form').addEventListener('submit', this.#formSubmitHandler);
   }
 
-  #closeClickHandler = () => {
+  #closeButtonClickHandler = () => {
     this._callback.closeClick();
   }
 
-  #submitFromHandler = (evt) => {
+  #formSubmitHandler = (evt) => {
     evt.preventDefault();
     this._callback.submitClick();
   }

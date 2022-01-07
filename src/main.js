@@ -1,6 +1,6 @@
 import {RenderPosition, render, replace} from './render.js';
 import {generatePoint} from './mock/point.js';
-import TopRouteInfoView from './view/top-routeinfo-view';
+import TopRouteInfoView from './view/top-route-info-view';
 import MenuView from './view/menu-view';
 import FilterView from './view/filter-view';
 import SortView from './view/sort-view';
@@ -13,37 +13,38 @@ const POINT_COUNT = 15;
 
 const points = Array.from({length: POINT_COUNT},generatePoint);
 
-const renderPoints = (pointsListElement, point) => {
+const renderPoint = (pointsListView, point) => {
   const eventComponent = new EventView(point);
   const eventEditComponent = new EditCreateEventView(point);
 
-  const onEscKeyDown = (evt) => {
+  const EscKeyPressHandler = (evt) => {
     if (evt.key === 'Escape' || evt.key === 'Esc') {
       evt.preventDefault();
       replace(eventComponent, eventEditComponent);
-      document.removeEventListener('keydown', onEscKeyDown);
+      document.removeEventListener('keydown', EscKeyPressHandler);
     }
   };
 
-  const onArrowDownButtonClick = () => {
+  const openEditForm = () => {
     replace(eventEditComponent, eventComponent);
-    document.addEventListener('keydown', onEscKeyDown);
+    document.addEventListener('keydown', EscKeyPressHandler);
   };
 
-  const onArrowUpButtonClick = () => {
+  const closeEditForm = () => {
     replace(eventComponent, eventEditComponent);
-    document.removeEventListener('keydown', onEscKeyDown);
+    document.removeEventListener('keydown', EscKeyPressHandler);
   };
-  const onPointSubmit = () => {
+
+  const submitForm = () => {
     replace(eventComponent, eventEditComponent);
-    document.removeEventListener('keydown', onEscKeyDown);
+    document.removeEventListener('keydown', EscKeyPressHandler);
   };
 
-  eventComponent.setEditClickHandler(onArrowDownButtonClick);
-  eventEditComponent.setCloseClickHandler(onArrowUpButtonClick);
-  eventEditComponent.setSubmitFormHandler(onPointSubmit);
+  eventComponent.setEditClickHandler(openEditForm);
+  eventEditComponent.setCloseClickHandler(closeEditForm);
+  eventEditComponent.setSubmitFormHandler(submitForm);
 
-  render(pointsListElement, eventComponent, RenderPosition.BEFORE_END);
+  render(pointsListView, eventComponent, RenderPosition.BEFORE_END);
 };
 
 const mainTripElement = document.querySelector('.trip-main');
@@ -64,6 +65,6 @@ if (points.length === 0) {
 
   render(pointsListComponent, new SortView(), RenderPosition.BEFORE_BEGIN);
   for (let i = 1; i < POINT_COUNT; i++) {
-    renderPoints(pointsListComponent, points[i]);
+    renderPoint(pointsListComponent, points[i]);
   }
 }
