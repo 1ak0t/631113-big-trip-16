@@ -1,4 +1,4 @@
-import {createElement} from '../render';
+import AbstractView from './abstract-view';
 
 const createRouteInfoTemplate = (points) => {
   const tripCities = [];
@@ -21,27 +21,15 @@ const createRouteInfoTemplate = (points) => {
   </section>`;
 };
 
-export default class TopRouteInfoView {
-  #element = null;
+export default class TopRouteInfoView extends AbstractView{
   #points = null;
 
   constructor(points) {
+    super();
     this.#points = points;
-  }
-
-  get element() {
-    if (!this.#element) {
-      this.#element = createElement(this.template);
-    }
-
-    return this.#element;
   }
 
   get template() {
     return createRouteInfoTemplate(this.#points);
-  }
-
-  removeElement() {
-    this.#element = null;
   }
 }
