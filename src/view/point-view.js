@@ -1,4 +1,3 @@
-import {getRandomNumberInt} from '../mock/randomaizer.js';
 import AbstractView from './abstract-view';
 
 const createEventTemplate = (point) => {
