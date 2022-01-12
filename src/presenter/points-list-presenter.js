@@ -34,9 +34,7 @@ export default class PointsListPresenter {
 
   #renderPointsList = () => {
     render(this.#pointsListContainer, this.#pointsListComponent, RenderPosition.BEFORE_END);
-    for (let i = 0; i < this.#points.length; i++) {
-      this.#renderPoint(this.#points[i]);
-    }
+    this.#points.forEach((point) => this.#renderPoint(point));
   }
 
   #renderPointsListContainer = () => {

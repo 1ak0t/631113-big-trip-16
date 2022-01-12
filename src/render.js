@@ -52,7 +52,7 @@ const replace = (newElement, oldElement) => {
   parent.replaceChild(newChild, oldChild);
 };
 
-export const remove = (component) => {
+const remove = (component) => {
   if (component === null) {
     return;
   }
@@ -65,4 +65,4 @@ export const remove = (component) => {
   component.removeElement();
 };
 
-export {RenderPosition, createElement, render, replace};
+export {RenderPosition, createElement, render, replace, remove};

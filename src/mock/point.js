@@ -47,14 +47,17 @@ const offers = [
     'type' : 'taxi',
     'offers': [
       {
+        'id': 1,
         'title': 'Upgrade to a business class',
         'price': 100,
       },
       {
+        'id': 2,
         'title': 'Choose radio station',
         'price': 40,
       },
       {
+        'id': 3,
         'title': 'Big luggage',
         'price': 140,
       }
@@ -64,10 +67,12 @@ const offers = [
     'type': 'bus',
     'offers': [
       {
+        'id': 1,
         'title': 'Top floor',
         'price': 30,
       },
       {
+        'id': 2,
         'title': 'Conditioner',
         'price': 20,
       }
@@ -77,14 +82,17 @@ const offers = [
     'type': 'train',
     'offers': [
       {
+        'id': 1,
         'title': 'Speed train',
         'price': 40,
       },
       {
+        'id': 2,
         'title': 'Compartment',
         'price': 100,
       },
       {
+        'id': 3,
         'title': 'Feeding',
         'price': 60,
       }
@@ -98,18 +106,22 @@ const offers = [
     'type': 'drive',
     'offers': [
       {
+        'id': 1,
         'title': 'Driver',
         'price': 150,
       },
       {
+        'id': 2,
         'title': 'Elite car',
         'price': 1000,
       },
       {
+        'id': 3,
         'title': 'Conditioner',
         'price': 30,
       },
       {
+        'id': 4,
         'title': 'Cabriolet',
         'price': 220,
       }
@@ -119,10 +131,12 @@ const offers = [
     'type': 'flight',
     'offers': [
       {
+        'id': 1,
         'title': 'Buisness class',
         'price': 200,
       },
       {
+        'id': 2,
         'title': 'First class',
         'price': 800,
       }
@@ -132,22 +146,27 @@ const offers = [
     'type': 'check-in',
     'offers': [
       {
+        'id': 1,
         'title': 'Suite',
         'price': 100,
       },
       {
+        'id': 2,
         'title': 'Family',
         'price': 200,
       },
       {
+        'id': 3,
         'title': 'Apartments ',
         'price': 220,
       },
       {
+        'id': 4,
         'title': 'Executive',
         'price': 350,
       },
       {
+        'id': 5,
         'title': 'President',
         'price': 1300,
       }
@@ -161,6 +180,7 @@ const offers = [
     'type': 'restaurant',
     'offers': [
       {
+        'id': 1,
         'title': 'dinner',
         'price': 30,
       }

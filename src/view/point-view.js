@@ -2,21 +2,20 @@ import {getRandomNumberInt} from '../mock/randomaizer.js';
 import AbstractView from './abstract-view';
 
 const createEventTemplate = (point) => {
-  const {type, destination, price, offers, isFavorite, dateFrom, dateTo} = point;
+  const {type, destination, price, offers, isFavorite, dateFrom, dateTo, selectedOffers} = point;
   const createOfferListTemplate = (currentOffers) => {
     const offerListFragment = [];
-    if (currentOffers.length < 1) {
-      return '';
-    }
     currentOffers.forEach((offer) => {
-      const offerTemplate = `<li class="event__offer">
-      <span class="event__offer-title">${offer.title}</span>
-      &plus;&euro;&nbsp;
-      <span class="event__offer-price">${offer.price}</span>
-      </li>`;
-      offerListFragment.push(offerTemplate);
+      if (selectedOffers.includes(offer.id)){
+        const offerTemplate = `<li class="event__offer">
+          <span class="event__offer-title">${offer.title}</span>
+          &plus;&euro;&nbsp;
+          <span class="event__offer-price">${offer.price}</span>
+          </li>`;
+        offerListFragment.push(offerTemplate);
+      }
     });
-    return offerListFragment.filter(() => getRandomNumberInt(0,1)).join('');
+    return offerListFragment.join('');
   };
   const likeState = isFavorite ? 'event__favorite-btn  event__favorite-btn--active' : 'event__favorite-btn';
 

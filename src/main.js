@@ -3,7 +3,7 @@ import {generatePoint} from './mock/point.js';
 import TopRouteInfoView from './view/top-route-info-view';
 import MenuView from './view/menu-view';
 import FilterView from './view/filter-view';
-import PointsListPresenter from './presenter/events-list-presenter';
+import PointsListPresenter from './presenter/points-list-presenter';
 
 const POINT_COUNT = 10;
 

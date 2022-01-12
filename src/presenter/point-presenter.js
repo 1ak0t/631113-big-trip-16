@@ -26,6 +26,7 @@ export default class PointPresenter {
 
   init = (point) => {
     this.#point = point;
+    this.#makeOfferPropsList();
 
     const prevPointComponent = this.#pointComponent;
     const prevEditCreatePointComponent = this.#editCreatePointComponent;
@@ -36,6 +37,7 @@ export default class PointPresenter {
     this.#pointComponent.setLikeClickHandler(this.#clickLikeButton);
     this.#editCreatePointComponent.setCloseClickHandler(this.#closeEditForm);
     this.#editCreatePointComponent.setSubmitFormHandler(this.#submitForm);
+    this.#editCreatePointComponent.setChooseOfferHandler(this.#clickOfferButton);
 
     if (prevPointComponent === null || prevEditCreatePointComponent === null) {
       render(this.#pointList, this.#pointComponent, RenderPosition.BEFORE_END);
@@ -65,34 +67,53 @@ export default class PointPresenter {
     }
   }
 
-  #EscKeyPressHandler = (evt) => {
+  #makeOfferPropsList = () => {
+    if (!this.#point.selectedOffers){
+      this.#point.selectedOffers = [];
+    }
+  }
+
+  #clickOfferButton = (button) => {
+    const offerId = Number(button);
+    const pointOffers = this.#point.selectedOffers;
+    if (pointOffers.includes(offerId)) {
+      pointOffers.splice(pointOffers.indexOf(offerId),1);
+      this.#changeData({...this.#point});
+      return;
+    }
+    pointOffers.push(offerId);
+    this.#changeData({...this.#point});
+  }
+
+  #clickLikeButton = () => {
+    this.#changeData({...this.#point, isFavorite: !this.#point.isFavorite});
+  }
+
+  #escKeydownHandler = (evt) => {
     if (evt.key === 'Escape' || evt.key === 'Esc') {
       evt.preventDefault();
       replace(this.#pointComponent, this.#editCreatePointComponent);
-      document.removeEventListener('keydown', this.#EscKeyPressHandler);
+      document.removeEventListener('keydown', this.#escKeydownHandler);
+      this.#mode = Mode.DEFAULT;
     }
   };
 
   #openEditForm = () => {
     replace(this.#editCreatePointComponent, this.#pointComponent);
-    document.addEventListener('keydown', this.#EscKeyPressHandler);
-    document.addEventListener('keydown', this.#EscKeyPressHandler);
     this.#changeMode();
+    document.addEventListener('keydown', this.#escKeydownHandler);
     this.#mode = Mode.EDITING;
   };
 
   #closeEditForm = () => {
     replace(this.#pointComponent, this.#editCreatePointComponent);
-    document.removeEventListener('keydown', this.#EscKeyPressHandler);
+    document.removeEventListener('keydown', this.#escKeydownHandler);
     this.#mode = Mode.DEFAULT;
   };
 
   #submitForm = () => {
     replace(this.#pointComponent, this.#editCreatePointComponent);
-    document.removeEventListener('keydown', this.#EscKeyPressHandler);
+    document.removeEventListener('keydown', this.#escKeydownHandler);
+    this.#mode = Mode.DEFAULT;
   };
-
-  #clickLikeButton = () => {
-    this.#changeData({...this.#point, isFavorite: !this.#point.isFavorite});
-  }
 }

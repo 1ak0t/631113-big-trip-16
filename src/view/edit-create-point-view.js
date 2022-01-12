@@ -145,6 +145,14 @@ export default class EditCreatePointView extends AbstractView{
     this.element.querySelector('form').addEventListener('submit', this.#formSubmitHandler);
   }
 
+  setChooseOfferHandler = (callback) => {
+    this._callback.chooseOffer = callback;
+    const offerButtons = this.element.querySelectorAll('.event__offer-checkbox');
+    if (offerButtons.length > 0) {
+      offerButtons.forEach((button) => button.addEventListener('click', this.#offerCheckboxClickHandler));
+    }
+  }
+
   #closeButtonClickHandler = () => {
     this._callback.closeClick();
   }
@@ -152,5 +160,9 @@ export default class EditCreatePointView extends AbstractView{
   #formSubmitHandler = (evt) => {
     evt.preventDefault();
     this._callback.submitClick();
+  }
+
+  #offerCheckboxClickHandler = (evt) => {
+    this._callback.chooseOffer(evt.target.dataset.id);
   }
 }
