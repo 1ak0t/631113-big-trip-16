@@ -3,7 +3,8 @@ import PointsListView from '../view/points-list-view';
 import SortView from '../view/sort-view';
 import {render, RenderPosition} from '../render';
 import PointPresenter from './point-presenter';
-import {updateItem} from '../utils/utils';
+import {sortByPrice, sortByDuration, updateItem} from '../utils/utils';
+import {SortType} from '../utils/consts';
 
 export default class PointsListPresenter {
   #pointsListContainer = null;
@@ -14,6 +15,8 @@ export default class PointsListPresenter {
 
   #points = [];
   #pointPresenters = new Map();
+  #currentSortType = SortType.DEFAULT;
+  #sourcedPoints = [];
 
   constructor(pointsListContainer) {
     this.#pointsListContainer = pointsListContainer;
@@ -21,6 +24,7 @@ export default class PointsListPresenter {
 
   init = (points) => {
     this.#points = [...points];
+    this.#sourcedPoints = [...points];
     this.#renderPointsListContainer();
   }
 
@@ -28,8 +32,34 @@ export default class PointsListPresenter {
     render(this.#pointsListContainer, this.#emptyListComponent, RenderPosition.BEFORE_END);
   }
 
+  #sortPoints = (sortType) => {
+    switch (sortType) {
+      case SortType.DURATION:
+        this.#points.sort(sortByDuration);
+        break;
+      case SortType.PRICE:
+        this.#points.sort(sortByPrice);
+        break;
+      default:
+        this.#points = [...this.#sourcedPoints];
+    }
+
+    this.#currentSortType = sortType;
+  }
+
+  #handleSortTypeChange = (sortType) => {
+    if (this.#currentSortType === sortType) {
+      return;
+    }
+
+    this.#sortPoints(sortType);
+    this.#clearPointsList();
+    this.#renderPointsList();
+  }
+
   #renderSortComponent = () => {
     render(this.#pointsListComponent, this.#sortPointsComponent, RenderPosition.BEFORE_BEGIN);
+    this.#sortPointsComponent.setSortTypeChangeHandler(this.#handleSortTypeChange);
   }
 
   #renderPointsList = () => {

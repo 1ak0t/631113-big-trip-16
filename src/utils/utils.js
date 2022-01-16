@@ -1,3 +1,7 @@
+import dayjs from 'dayjs';
+import duration from 'dayjs/plugin/duration';
+dayjs.extend(duration);
+
 const replaceWhitespace = (text) => (text.toLowerCase().replace(/ /g,'-'));
 
 const makeOffersListTemplate = (offers) => {
@@ -17,12 +21,19 @@ const checkAvailableOffers = (offers) => offers.length > 0 ? 'event__section  ev
 
 const checkAvailablePhotos = (photos) => photos.length > 0 ? 'event__photos-container' : 'event__photos-container visually-hidden';
 
+const checkAvailableDescription = (description, photos) => (description.length > 0 & photos.length > 0) ? 'event__section  event__section--destination' : 'event__section  event__section--destination visually-hidden';
+
 const makePhotosListTemplate = (photos) => {
   if (photos.length > 0) {
     const pointPhotos = [];
     photos.forEach((photo) => pointPhotos.push(`<img class="event__photo" src="${photo.src}" alt="${photo.description}">`));
     return pointPhotos.join('');
   }
+};
+
+const getDuration = (dateFrom, dateTo) => {
+  const diffMinutes = dateTo.diff(dateFrom, 'minute');
+  return dayjs.duration(diffMinutes, 'minute').format('DD[D] HH[H] mm[M]');
 };
 
 const updateItem = (items, update) => {
@@ -39,4 +50,26 @@ const updateItem = (items, update) => {
   ];
 };
 
-export {makePhotosListTemplate, makeOffersListTemplate, checkAvailablePhotos, checkAvailableOffers, updateItem};
+const sortByPrice = (priceA, priceB) => {
+  if (priceB.price < priceA.price) {
+    return -1;
+  }
+  if (priceA.price < priceB.price) {
+    return 1;
+  }
+  return  0;
+};
+
+const sortByDuration = (pointA, pointB) => {
+  const durationA = pointA.dateTo.diff(pointA.dateFrom, 'minute');
+  const durationB = pointB.dateTo.diff(pointB.dateFrom, 'minute');
+  if (durationA > durationB) {
+    return -1;
+  }
+  if (durationB > durationA) {
+    return 1;
+  }
+  return  0;
+};
+
+export {makePhotosListTemplate, makeOffersListTemplate, checkAvailablePhotos, checkAvailableOffers,checkAvailableDescription, updateItem, sortByPrice, sortByDuration, getDuration};

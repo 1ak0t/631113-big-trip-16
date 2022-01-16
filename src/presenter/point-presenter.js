@@ -9,7 +9,8 @@ const Mode = {
 
 export default class PointPresenter {
   #pointList = null;
-  #point = null
+  #point = null;
+  #chooseOffers = [];
   #changeData = null;
   #changeMode = null;
 
@@ -75,14 +76,12 @@ export default class PointPresenter {
 
   #clickOfferButton = (button) => {
     const offerId = Number(button);
-    const pointOffers = this.#point.selectedOffers;
-    if (pointOffers.includes(offerId)) {
-      pointOffers.splice(pointOffers.indexOf(offerId),1);
-      this.#changeData({...this.#point});
-      return;
+    if (this.#chooseOffers.includes(offerId)) {
+      this.#chooseOffers.splice(this.#chooseOffers.indexOf(offerId),1);
+      return this.#chooseOffers;
     }
-    pointOffers.push(offerId);
-    this.#changeData({...this.#point});
+    this.#chooseOffers.push(offerId);
+    return this.#chooseOffers;
   }
 
   #clickLikeButton = () => {
@@ -95,6 +94,7 @@ export default class PointPresenter {
       replace(this.#pointComponent, this.#editCreatePointComponent);
       document.removeEventListener('keydown', this.#escKeydownHandler);
       this.#mode = Mode.DEFAULT;
+      this.#chooseOffers = [];
     }
   };
 
@@ -109,6 +109,7 @@ export default class PointPresenter {
     replace(this.#pointComponent, this.#editCreatePointComponent);
     document.removeEventListener('keydown', this.#escKeydownHandler);
     this.#mode = Mode.DEFAULT;
+    this.#chooseOffers = [];
   };
 
   #submitForm = () => {

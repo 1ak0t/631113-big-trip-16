@@ -1,4 +1,4 @@
-import {makePhotosListTemplate, makeOffersListTemplate, checkAvailablePhotos, checkAvailableOffers} from '../utils/utils';
+import {makePhotosListTemplate, makeOffersListTemplate, checkAvailablePhotos, checkAvailableOffers, checkAvailableDescription} from '../utils/utils';
 import AbstractView from './abstract-view';
 
 const createEventEditTemplate = (point) => {
@@ -109,7 +109,7 @@ const createEventEditTemplate = (point) => {
           </div>
         </section>
 
-        <section class="event__section  event__section--destination">
+        <section class="${checkAvailableDescription(destination.description, destination.pictures)}">
           <h3 class="event__section-title  event__section-title--destination">Destination</h3>
           <p class="event__destination-description">${destination.description}</p>
           <div class="${checkAvailablePhotos(destination.pictures)}">
