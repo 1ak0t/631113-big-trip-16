@@ -1,9 +1,10 @@
 import AbstractView from './abstract-view';
+import {getDuration} from '../utils/utils';
 
 const createEventTemplate = (point) => {
   const {type, destination, price, offers, isFavorite, dateFrom, dateTo, selectedOffers} = point;
   const createOfferListTemplate = (currentOffers) => {
-    const offerListFragment = [];
+    const offerListFragments = [];
     currentOffers.forEach((offer) => {
       if (selectedOffers.includes(offer.id)){
         const offerTemplate = `<li class="event__offer">
@@ -11,10 +12,10 @@ const createEventTemplate = (point) => {
           &plus;&euro;&nbsp;
           <span class="event__offer-price">${offer.price}</span>
           </li>`;
-        offerListFragment.push(offerTemplate);
+        offerListFragments.push(offerTemplate);
       }
     });
-    return offerListFragment.join('');
+    return offerListFragments.join('');
   };
   const likeState = isFavorite ? 'event__favorite-btn  event__favorite-btn--active' : 'event__favorite-btn';
 
@@ -31,7 +32,7 @@ const createEventTemplate = (point) => {
           &mdash;
           <time class="event__end-time" datetime="${dateTo.toISOString()}">${dateTo.format('HH:mm')}</time>
         </p>
-        <p class="event__duration">${dateTo.subtract(dateFrom).format('DD[D] HH[H] mm[M]')}</p>
+        <p class="event__duration">${getDuration(dateFrom, dateTo)}</p>
       </div>
       <p class="event__price">
         &euro;&nbsp;<span class="event__price-value">${price}</span>

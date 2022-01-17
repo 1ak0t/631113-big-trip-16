@@ -229,11 +229,11 @@ const makeCityDatalistTemplate = (cities) => {
   return pointCities.join('');
 };
 
-const getDate = () => (dayjs().add(getRandomNumberInt(0,45), 'day').add(getRandomNumberInt(0,24), 'hour'));
+const getDate = () => (dayjs().add(getRandomNumberInt(0,10), 'day').add(getRandomNumberInt(0,24), 'hour'));
 const getSecondDate = (firstDate) => {
   let secondDate = getDate();
 
-  while (!secondDate.isAfter(firstDate)) {
+  while (secondDate.isBefore(firstDate)) {
     secondDate = getDate();
   }
   return secondDate;
@@ -241,12 +241,13 @@ const getSecondDate = (firstDate) => {
 
 export const generatePoint = () => {
   const eventType = getRandomArrayElement(getPointTypes(offers));
+  const dateFrom = getDate();
   return {
     id: nanoid(),
     type: eventType,
     price: getRandomNumberInt(0, 2000),
-    dateFrom: getDate(),
-    dateTo: getSecondDate(),
+    dateFrom: dateFrom,
+    dateTo: getSecondDate(dateFrom),
     offers: getOffers(offers ,eventType),
     destination: {
       description: getDescription(description),
