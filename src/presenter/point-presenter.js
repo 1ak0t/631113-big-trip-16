@@ -10,9 +10,9 @@ const Mode = {
 export default class PointPresenter {
   #pointList = null;
   #point = null;
-  #chooseOffers = [];
+  #choosedOffers = [];
   #changeData = null;
-  #changeMode = null;
+  #changedMode = null;
 
   #mode = Mode.DEFAULT;
 
@@ -22,7 +22,7 @@ export default class PointPresenter {
   constructor(pointList, changeData, changeMode) {
     this.#pointList = pointList;
     this.#changeData = changeData;
-    this.#changeMode = changeMode;
+    this.#changedMode = changeMode;
   }
 
   init = (point) => {
@@ -58,6 +58,7 @@ export default class PointPresenter {
   }
 
   destroy = () => {
+    document.removeEventListener('keydown', this.#escKeydownHandler);
     remove(this.#pointComponent);
     remove(this.#editCreatePointComponent);
   }
@@ -76,31 +77,20 @@ export default class PointPresenter {
 
   #clickOfferButton = (button) => {
     const offerId = Number(button);
-    if (this.#chooseOffers.includes(offerId)) {
-      this.#chooseOffers.splice(this.#chooseOffers.indexOf(offerId),1);
-      return this.#chooseOffers;
+    if (this.#choosedOffers.includes(offerId)) {
+      this.#choosedOffers.splice(this.#choosedOffers.indexOf(offerId),1);
+      return;
     }
-    this.#chooseOffers.push(offerId);
-    return this.#chooseOffers;
+    this.#choosedOffers.push(offerId);
   }
 
   #clickLikeButton = () => {
     this.#changeData({...this.#point, isFavorite: !this.#point.isFavorite});
   }
 
-  #escKeydownHandler = (evt) => {
-    if (evt.key === 'Escape' || evt.key === 'Esc') {
-      evt.preventDefault();
-      replace(this.#pointComponent, this.#editCreatePointComponent);
-      document.removeEventListener('keydown', this.#escKeydownHandler);
-      this.#mode = Mode.DEFAULT;
-      this.#chooseOffers = [];
-    }
-  };
-
   #openEditForm = () => {
     replace(this.#editCreatePointComponent, this.#pointComponent);
-    this.#changeMode();
+    this.#changedMode();
     document.addEventListener('keydown', this.#escKeydownHandler);
     this.#mode = Mode.EDITING;
   };
@@ -109,12 +99,22 @@ export default class PointPresenter {
     replace(this.#pointComponent, this.#editCreatePointComponent);
     document.removeEventListener('keydown', this.#escKeydownHandler);
     this.#mode = Mode.DEFAULT;
-    this.#chooseOffers = [];
+    this.#choosedOffers = [];
   };
 
   #submitForm = () => {
     replace(this.#pointComponent, this.#editCreatePointComponent);
     document.removeEventListener('keydown', this.#escKeydownHandler);
     this.#mode = Mode.DEFAULT;
+  };
+
+  #escKeydownHandler = (evt) => {
+    if (evt.key === 'Escape' || evt.key === 'Esc') {
+      evt.preventDefault();
+      replace(this.#pointComponent, this.#editCreatePointComponent);
+      document.removeEventListener('keydown', this.#escKeydownHandler);
+      this.#mode = Mode.DEFAULT;
+      this.#choosedOffers = [];
+    }
   };
 }

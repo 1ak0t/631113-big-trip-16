@@ -3,7 +3,7 @@ import PointsListView from '../view/points-list-view';
 import SortView from '../view/sort-view';
 import {render, RenderPosition} from '../render';
 import PointPresenter from './point-presenter';
-import {sortByPrice, sortByDuration, updateItem} from '../utils/utils';
+import {sortByPrice, sortByDuration, updateItem, sortByTime} from '../utils/utils';
 import {SortType} from '../utils/consts';
 
 export default class PointsListPresenter {
@@ -23,6 +23,7 @@ export default class PointsListPresenter {
   }
 
   init = (points) => {
+    points.sort(sortByTime);
     this.#points = [...points];
     this.#sourcedPoints = [...points];
     this.#renderPointsListContainer();

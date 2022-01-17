@@ -1,4 +1,4 @@
-import {makePhotosListTemplate, makeOffersListTemplate, checkAvailablePhotos, checkAvailableOffers, checkAvailableDescription} from '../utils/utils';
+import {makePhotosListTemplate, makeOffersListTemplate, setPhotosClassByAvailable, setOffersClassByAvailable, setDescriptionClassByAvailable} from '../utils/utils';
 import AbstractView from './abstract-view';
 
 const createEventEditTemplate = (point) => {
@@ -101,7 +101,7 @@ const createEventEditTemplate = (point) => {
         </button>
       </header>
       <section class="event__details">
-        <section class="${checkAvailableOffers(offers)}">
+        <section class="${setOffersClassByAvailable(offers)}">
           <h3 class="event__section-title  event__section-title--offers">Offers</h3>
 
           <div class="event__available-offers">
@@ -109,10 +109,10 @@ const createEventEditTemplate = (point) => {
           </div>
         </section>
 
-        <section class="${checkAvailableDescription(destination.description, destination.pictures)}">
+        <section class="${setDescriptionClassByAvailable(destination.description, destination.pictures)}">
           <h3 class="event__section-title  event__section-title--destination">Destination</h3>
           <p class="event__destination-description">${destination.description}</p>
-          <div class="${checkAvailablePhotos(destination.pictures)}">
+          <div class="${setPhotosClassByAvailable(destination.pictures)}">
             <div class="event__photos-tape">
               ${makePhotosListTemplate(destination.pictures)}
             </div>
