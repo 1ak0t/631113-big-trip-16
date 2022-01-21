@@ -4,18 +4,21 @@ import {getDuration} from '../utils/utils';
 const createEventTemplate = (point) => {
   const {type, destination, price, offers, isFavorite, dateFrom, dateTo, selectedOffers} = point;
   const createOfferListTemplate = (currentOffers) => {
-    const offerListFragments = [];
-    currentOffers.forEach((offer) => {
-      if (selectedOffers.includes(offer.id)){
-        const offerTemplate = `<li class="event__offer">
+    if (selectedOffers) {
+      const offerListFragments = [];
+      currentOffers.forEach((offer) => {
+        if (selectedOffers.includes(offer.id)){
+          const offerTemplate = `<li class="event__offer">
           <span class="event__offer-title">${offer.title}</span>
           &plus;&euro;&nbsp;
           <span class="event__offer-price">${offer.price}</span>
           </li>`;
-        offerListFragments.push(offerTemplate);
-      }
-    });
-    return offerListFragments.join('');
+          offerListFragments.push(offerTemplate);
+        }
+      });
+      return offerListFragments.join('');
+    }
+    return '';
   };
   const likeState = isFavorite ? 'event__favorite-btn  event__favorite-btn--active' : 'event__favorite-btn';
 

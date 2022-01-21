@@ -1,5 +1,5 @@
 import {RenderPosition, render} from './render.js';
-import {generatePoint} from './mock/point.js';
+import {generatePoint, Offers, Destinations} from './mock/point.js';
 import TopRouteInfoView from './view/top-route-info-view';
 import MenuView from './view/menu-view';
 import FilterView from './view/filter-view';
@@ -20,4 +20,4 @@ render(filterElement, new FilterView(), RenderPosition.BEFORE_END);
 const tripEventsContainerElement = document.querySelector('.trip-events');
 
 const pointsListPresenter = new PointsListPresenter(tripEventsContainerElement);
-pointsListPresenter.init(points);
+pointsListPresenter.init(points, Offers, Destinations);

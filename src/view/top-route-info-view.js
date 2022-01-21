@@ -1,5 +1,5 @@
 import AbstractView from './abstract-view';
-import {setCitiesListOnTop, sortByTime} from '../utils/utils';
+import {getCitiesListOnTopTemplate, sortByTime} from '../utils/utils';
 
 const createRouteInfoTemplate = (points) => {
   points.sort(sortByTime);
@@ -12,7 +12,7 @@ const createRouteInfoTemplate = (points) => {
 
   return `<section class="trip-main__trip-info  trip-info">
     <div class="trip-info__main">
-      <h1 class="trip-info__title">${setCitiesListOnTop(tripCities)}</h1>
+      <h1 class="trip-info__title">${getCitiesListOnTopTemplate(tripCities)}</h1>
 
       <p class="trip-info__dates">${points[0].dateFrom.format('D MMM')} &mdash; ${points[points.length - 1].dateFrom.format('D MMM')}</p>
     </div>

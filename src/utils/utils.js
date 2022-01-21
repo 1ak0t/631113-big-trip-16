@@ -2,8 +2,12 @@ import dayjs from 'dayjs';
 import duration from 'dayjs/plugin/duration';
 dayjs.extend(duration);
 
-const setCitiesListOnTop = (cities) => {
-  if (cities.length > 3) {
+const MAX_CITIES_IN_ROUTE = 3;
+const MINUTES_IN_HOUR = 60;
+const MINUTES_IN_DAY = 1440;
+
+const getCitiesListOnTopTemplate = (cities) => {
+  if (cities.length > MAX_CITIES_IN_ROUTE) {
     return `${cities[0]} &mdash; ... &mdash; ${cities[cities.length - 1]}`;
   }
   return `${cities.join(' &mdash; ')}`;
@@ -40,10 +44,10 @@ const makePhotosListTemplate = (photos) => {
 
 const getDuration = (dateFrom, dateTo) => {
   const diffMinutes = dateTo.diff(dateFrom, 'minute');
-  if (diffMinutes < 60) {
+  if (diffMinutes < MINUTES_IN_HOUR) {
     return dayjs.duration(diffMinutes, 'minute').format('mm[M]');
   }
-  if (diffMinutes < 1440 & diffMinutes >= 60) {
+  if (diffMinutes < MINUTES_IN_DAY && diffMinutes >= MINUTES_IN_HOUR) {
     return dayjs.duration(diffMinutes, 'minute').format('HH[H] mm[M]');
   }
   return dayjs.duration(diffMinutes, 'minute').format('DD[D] HH[H] mm[M]');
@@ -63,21 +67,21 @@ const updateItem = (items, update) => {
   ];
 };
 
-const sortByTime = (timeA, timeB) => {
-  if (timeB.dateFrom.isAfter(timeA.dateFrom)) {
+const sortByTime = (pointA, pointB) => {
+  if (pointB.dateFrom.isAfter(pointA.dateFrom)) {
     return -1;
   }
-  if (timeA.dateFrom.isAfter(timeB.dateFrom)) {
+  if (pointA.dateFrom.isAfter(pointB.dateFrom)) {
     return 1;
   }
   return  0;
 };
 
-const sortByPrice = (priceA, priceB) => {
-  if (priceB.price < priceA.price) {
+const sortByPrice = (pointA, pointB) => {
+  if (pointB.price < pointA.price) {
     return -1;
   }
-  if (priceA.price < priceB.price) {
+  if (pointA.price < pointB.price) {
     return 1;
   }
   return  0;
@@ -95,4 +99,4 @@ const sortByDuration = (pointA, pointB) => {
   return  0;
 };
 
-export {makePhotosListTemplate, makeOffersListTemplate, setPhotosClassByAvailable, setOffersClassByAvailable,setDescriptionClassByAvailable, updateItem, sortByPrice, sortByDuration, getDuration, sortByTime, setCitiesListOnTop};
+export {makePhotosListTemplate, makeOffersListTemplate, setPhotosClassByAvailable, setOffersClassByAvailable,setDescriptionClassByAvailable, updateItem, sortByPrice, sortByDuration, getDuration, sortByTime, getCitiesListOnTopTemplate};
