@@ -2,7 +2,7 @@ import dayjs from 'dayjs';
 import {getRandomNumberInt} from './randomaizer.js';
 import {nanoid} from 'nanoid';
 
-const Offers = [
+const offers = [
   {
     'type' : 'taxi',
     'offers': [
@@ -175,7 +175,7 @@ const getPhotos = () => {
   return photos;
 };
 
-const Destinations = [
+const destinations = [
   {
     'description': getDescription(description),
     'name': 'Vienna',
@@ -213,7 +213,7 @@ const Destinations = [
   },
 ];
 
-const getOffersList = (offers, type) => offers.filter((offer) => offer['type'] === type)[0].offers;
+const getOffersList = (offersItems, type) => offersItems.filter((offer) => offer['type'] === type)[0].offers;
 
 const getPointTypes = (types) => {
   const pointTypes = [];
@@ -232,7 +232,7 @@ const getSecondDate = (firstDate) => {
 };
 
 const generatePoint = () => {
-  const eventType = getRandomArrayElement(getPointTypes(Offers));
+  const eventType = getRandomArrayElement(getPointTypes(offers));
   const dateFrom = getDate();
   return {
     id: nanoid(),
@@ -240,10 +240,10 @@ const generatePoint = () => {
     price: getRandomNumberInt(0, 2000),
     dateFrom: dateFrom,
     dateTo: getSecondDate(dateFrom),
-    offers: getOffersList(Offers, eventType),
-    destination: getRandomArrayElement(Destinations),
+    offers: getOffersList(offers, eventType),
+    destination: getRandomArrayElement(destinations),
     isFavorite: Boolean(getRandomNumberInt(0,1)),
   };
 };
 
-export {generatePoint, Offers, Destinations};
+export {generatePoint, offers, destinations};

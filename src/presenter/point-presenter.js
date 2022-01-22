@@ -75,6 +75,12 @@ export default class PointPresenter {
     this.#changeData({...this.#point, isFavorite: !this.#point.isFavorite});
   }
 
+  #changeOpenToClosePoint = () =>  {
+    replace(this.#pointComponent, this.#editCreatePointComponent);
+    document.removeEventListener('keydown', this.#escKeydownHandler);
+    this.#mode = Mode.DEFAULT;
+  }
+
   #openEditForm = () => {
     replace(this.#editCreatePointComponent, this.#pointComponent);
     this.#changeMode();
@@ -83,24 +89,18 @@ export default class PointPresenter {
   };
 
   #closeEditForm = () => {
-    replace(this.#pointComponent, this.#editCreatePointComponent);
-    document.removeEventListener('keydown', this.#escKeydownHandler);
-    this.#mode = Mode.DEFAULT;
+    this.#changeOpenToClosePoint();
   };
 
   #submitForm = () => {
-    replace(this.#pointComponent, this.#editCreatePointComponent);
-    document.removeEventListener('keydown', this.#escKeydownHandler);
-    this.#mode = Mode.DEFAULT;
+    this.#changeOpenToClosePoint();
   };
 
   #escKeydownHandler = (evt) => {
     if (evt.key === 'Escape' || evt.key === 'Esc') {
       evt.preventDefault();
       this.#editCreatePointComponent.reset(this.#point);
-      replace(this.#pointComponent, this.#editCreatePointComponent);
-      document.removeEventListener('keydown', this.#escKeydownHandler);
-      this.#mode = Mode.DEFAULT;
+      this.#changeOpenToClosePoint();
     }
   };
 }

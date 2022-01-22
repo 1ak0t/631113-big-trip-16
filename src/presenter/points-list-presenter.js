@@ -69,7 +69,7 @@ export default class PointsListPresenter {
 
   #renderPointsList = () => {
     render(this.#pointsListContainer, this.#pointsListComponent, RenderPosition.BEFORE_END);
-    this.#points.forEach((point) => this.#renderPoint(point, this.#offers, this.#destinations));
+    this.#points.forEach((point) => this.#renderPoint(point));
   }
 
   #renderPointsListContainer = () => {
@@ -81,15 +81,15 @@ export default class PointsListPresenter {
     }
   }
 
-  #renderPoint = (point, offers, destinations) => {
+  #renderPoint = (point) => {
     const pointPresenter = new PointPresenter(this.#pointsListComponent, this.#handlePointChange, this.#handleModeChange);
-    pointPresenter.init(point, offers, destinations);
+    pointPresenter.init(point, this.#offers, this.#destinations);
     this.#pointPresenters.set(point.id, pointPresenter);
   }
 
   #handlePointChange = (updatedPoint) => {
     this.#points = updateItem(this.#points, updatedPoint);
-    this.#pointPresenters.get(updatedPoint.id).init(updatedPoint);
+    this.#pointPresenters.get(updatedPoint.id).init(updatedPoint, this.#offers, this.#destinations);
   }
 
   #handleModeChange = () => {

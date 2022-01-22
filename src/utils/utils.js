@@ -1,10 +1,11 @@
 import dayjs from 'dayjs';
 import duration from 'dayjs/plugin/duration';
-dayjs.extend(duration);
 
 const MAX_CITIES_IN_ROUTE = 3;
 const MINUTES_IN_HOUR = 60;
 const MINUTES_IN_DAY = 1440;
+
+dayjs.extend(duration);
 
 const getCitiesListOnTopTemplate = (cities) => {
   if (cities.length > MAX_CITIES_IN_ROUTE) {

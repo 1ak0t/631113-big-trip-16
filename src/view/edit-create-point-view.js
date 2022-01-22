@@ -6,9 +6,9 @@ const createEventEditTemplate = (data, destinations) => {
   const dateStart = dateFrom.format('DD/MM/YY HH:mm');
   const dateEnd = dateTo.format('DD/MM/YY HH:mm');
 
-  const makeCityDatalistTemplate = (destinationsList) => {
+  const makeCityDatalistTemplate = (destinationsItems) => {
     const pointCities = [];
-    destinationsList.forEach((destinationItem) => pointCities.push(`<option value="${destinationItem.name}"></option>`));
+    destinationsItems.forEach((destinationItem) => pointCities.push(`<option value="${destinationItem.name}"></option>`));
     return pointCities.join('');
   };
 
@@ -97,7 +97,7 @@ const createEventEditTemplate = (data, destinations) => {
             <span class="visually-hidden">Price</span>
             &euro;
           </label>
-          <input class="event__input  event__input--price" id="event-price-1" type="text" name="event-price" value="${price}">
+          <input class="event__input  event__input--price" id="event-price-1" type="number" name="event-price" value="${price}" min="0">
         </div>
 
         <button class="event__save-btn  btn  btn--blue" type="submit">Save</button>
@@ -146,19 +146,9 @@ export default class EditCreatePointView extends SmartView{
     return createEventEditTemplate(this._data, this.#destinations);
   }
 
-  reset = (point) => {
-    this.updateData(EditCreatePointView.parsePointToData(point));
-  }
+  #getOffersList = (offers, type) => offers.find((offer) => offer['type'] === type).offers;
 
-  resetData = () => {
-    this._data.choosedOffers.length = 0;
-  }
-
-  restoreHandlers = () => {
-    this.#setInnerHandlers();
-    this.setCloseClickHandler(this._callback.closeClick);
-    this.setSubmitFormHandler(this._callback.submitClick);
-  }
+  #getDestination = (destinations, destinationName) => (destinations.find((destination) => destination.name === destinationName));
 
   setCloseClickHandler = (callback) => {
     this._callback.closeClick = callback;
@@ -170,13 +160,11 @@ export default class EditCreatePointView extends SmartView{
     this.element.querySelector('form').addEventListener('submit', this.#formSubmitHandler);
   }
 
-  #getOffersList = (offers, type) => offers.filter((offer) => offer['type'] === type)[0].offers;
-
-  #getDestination = (destinations, destinationName) => (destinations.filter((destination) => destination.name === destinationName)[0]);
-
   #setInnerHandlers = () => {
     this.#setTypeInputHandler();
-    this.#setDestinationInputHandler();
+    this.#setDestinationChangeHandler();
+    this.#setDestinationClickHandler();
+    this.#setPriceInputHandler();
     this.#setChooseOfferHandler();
   }
 
@@ -185,8 +173,16 @@ export default class EditCreatePointView extends SmartView{
     typeInput.forEach((input) => input.addEventListener('input', this.#typeInputChangeHandler));
   }
 
-  #setDestinationInputHandler =() => {
+  #setDestinationChangeHandler =() => {
     this.element.querySelector('.event__input--destination').addEventListener('change', this.#destinationInputChangeHandler);
+  }
+
+  #setDestinationClickHandler =() => {
+    this.element.querySelector('.event__input--destination').addEventListener('click', this.#destinationInputClickHandler);
+  }
+
+  #setPriceInputHandler =() => {
+    this.element.querySelector('.event__input--price').addEventListener('input', this.#priceInputHandler);
   }
 
   #setChooseOfferHandler = () => {
@@ -194,6 +190,22 @@ export default class EditCreatePointView extends SmartView{
     if (offerButtons.length > 0) {
       offerButtons.forEach((button) => button.addEventListener('click', this.#offerCheckboxClickHandler));
     }
+  }
+
+  reset = (point) => {
+    this.updateData(EditCreatePointView.parsePointToData(point));
+  }
+
+  resetData = () => {
+    if (this._data.length > 0) {
+      this._data.choosedOffers.length = 0;
+    }
+  }
+
+  restoreHandlers = () => {
+    this.#setInnerHandlers();
+    this.setCloseClickHandler(this._callback.closeClick);
+    this.setSubmitFormHandler(this._callback.submitClick);
   }
 
   #typeInputChangeHandler = (evt) => {
@@ -204,9 +216,34 @@ export default class EditCreatePointView extends SmartView{
   }
 
   #destinationInputChangeHandler = (evt) => {
-    this.updateData({
-      destination: this.#getDestination(this.#destinations, evt.target.value),
-    });
+    const datalist = evt.target.list;
+    let optionFound = false;
+    for (let j = 0; j < datalist.options.length; j++) {
+      if (evt.target.value === datalist.options[j].value) {
+        optionFound = true;
+        break;
+      }
+    }
+    if (optionFound) {
+      evt.target.setCustomValidity('');
+      this.updateData({
+        destination: this.#getDestination(this.#destinations, evt.target.value),
+      });
+    } else {
+      evt.target.setCustomValidity('Выберите пункт назначения из возможных вариантов');
+    }
+  }
+
+  #destinationInputClickHandler = (evt) => {
+    evt.target.value = '';
+  }
+
+  #priceInputHandler = (evt) => {
+    if (evt.target.value > 0) {
+      evt.target.setCustomValidity('');
+    } else {
+      evt.target.setCustomValidity('Введите положительное число');
+    }
   }
 
   #offerCheckboxClickHandler = (evt) => {
