@@ -14,6 +14,8 @@ export default class PointsListPresenter {
   #sortPointsComponent = new SortView();
 
   #points = [];
+  #offers = [];
+  #destinations = [];
   #pointPresenters = new Map();
   #currentSortType = SortType.DEFAULT;
   #sourcedPoints = [];
@@ -22,10 +24,12 @@ export default class PointsListPresenter {
     this.#pointsListContainer = pointsListContainer;
   }
 
-  init = (points) => {
+  init = (points, offers, destinations) => {
     points.sort(sortByTime);
     this.#points = [...points];
     this.#sourcedPoints = [...points];
+    this.#offers = [...offers];
+    this.#destinations = [...destinations];
     this.#renderPointsListContainer();
   }
 
@@ -79,13 +83,13 @@ export default class PointsListPresenter {
 
   #renderPoint = (point) => {
     const pointPresenter = new PointPresenter(this.#pointsListComponent, this.#handlePointChange, this.#handleModeChange);
-    pointPresenter.init(point);
+    pointPresenter.init(point, this.#offers, this.#destinations);
     this.#pointPresenters.set(point.id, pointPresenter);
   }
 
   #handlePointChange = (updatedPoint) => {
     this.#points = updateItem(this.#points, updatedPoint);
-    this.#pointPresenters.get(updatedPoint.id).init(updatedPoint);
+    this.#pointPresenters.get(updatedPoint.id).init(updatedPoint, this.#offers, this.#destinations);
   }
 
   #handleModeChange = () => {

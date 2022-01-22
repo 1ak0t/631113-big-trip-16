@@ -2,46 +2,6 @@ import dayjs from 'dayjs';
 import {getRandomNumberInt} from './randomaizer.js';
 import {nanoid} from 'nanoid';
 
-const Cities = [
-  'Vienna',
-  'Tirana',
-  'Minsk',
-  'Brussels',
-  'Sophia',
-  'Sarajevo',
-  'Vatican City',
-  'London',
-  'Budapest',
-  'Berlin',
-  'Gibraltar',
-  'Athens',
-  'Copenhagen',
-  'Dublin',
-  'Reykjavik',
-  'Madrid',
-  'Rome',
-  'Riga',
-  'Luxembourg',
-  'Chisinau',
-  'Monaco',
-  'Amsterdam',
-  'Oslo',
-  'Warsaw',
-  'Lisbon',
-  'Bucharest',
-  'Moscow',
-  'San Marino',
-  'Belgrade',
-  'Bratislava',
-  'Kiev',
-  'Helsinki',
-  'Paris',
-  'Zagreb',
-  'Prague',
-  'Stockholm',
-  'Tallinn',
-];
-
 const offers = [
   {
     'type' : 'taxi',
@@ -195,14 +155,6 @@ const getRandomArrayElement = (array) => {
   return array[randomIndex];
 };
 
-const getPointTypes = (types) => {
-  const pointTypes = [];
-  types.forEach((item) => pointTypes.push(item.type));
-  return pointTypes;
-};
-
-const getOffers = (offersDatas, type) => offersDatas.filter((offer) => offer['type'] === type)[0].offers;
-
 const getDescription = (text) => {
   const descriptionRandomArray = [];
   const descriptionArray = text.match(/[^.!?]+[.!?]+["']?|.+$/g);
@@ -223,10 +175,50 @@ const getPhotos = () => {
   return photos;
 };
 
-const makeCityDatalistTemplate = (cities) => {
-  const pointCities = [];
-  cities.forEach((city) => pointCities.push(`<option value="${city}"></option>`));
-  return pointCities.join('');
+const destinations = [
+  {
+    'description': getDescription(description),
+    'name': 'Vienna',
+    'pictures': getPhotos(),
+  },
+  {
+    'description': getDescription(description),
+    'name': 'Tirana',
+    'pictures': getPhotos(),
+  },
+  {
+    'description': getDescription(description),
+    'name': 'Minsk',
+    'pictures': getPhotos(),
+  },
+  {
+    'description': getDescription(description),
+    'name': 'Brussels',
+    'pictures': getPhotos(),
+  },
+  {
+    'description': getDescription(description),
+    'name': 'Sophia',
+    'pictures': getPhotos(),
+  },
+  {
+    'description': getDescription(description),
+    'name': 'London',
+    'pictures': getPhotos(),
+  },
+  {
+    'description': getDescription(description),
+    'name': 'Berlin',
+    'pictures': getPhotos(),
+  },
+];
+
+const getOffersList = (offersItems, type) => offersItems.filter((offer) => offer['type'] === type)[0].offers;
+
+const getPointTypes = (types) => {
+  const pointTypes = [];
+  types.forEach((item) => pointTypes.push(item.type));
+  return pointTypes;
 };
 
 const getDate = () => (dayjs().add(getRandomNumberInt(0,10), 'day').add(getRandomNumberInt(0,24), 'hour'));
@@ -239,7 +231,7 @@ const getSecondDate = (firstDate) => {
   return secondDate;
 };
 
-export const generatePoint = () => {
+const generatePoint = () => {
   const eventType = getRandomArrayElement(getPointTypes(offers));
   const dateFrom = getDate();
   return {
@@ -248,13 +240,10 @@ export const generatePoint = () => {
     price: getRandomNumberInt(0, 2000),
     dateFrom: dateFrom,
     dateTo: getSecondDate(dateFrom),
-    offers: getOffers(offers ,eventType),
-    destination: {
-      description: getDescription(description),
-      name: getRandomArrayElement(Cities),
-      pictures: getPhotos(),
-    },
+    offers: getOffersList(offers, eventType),
+    destination: getRandomArrayElement(destinations),
     isFavorite: Boolean(getRandomNumberInt(0,1)),
-    cityList: makeCityDatalistTemplate(Cities),
   };
 };
+
+export {generatePoint, offers, destinations};

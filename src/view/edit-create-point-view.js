@@ -1,10 +1,16 @@
 import {makePhotosListTemplate, makeOffersListTemplate, setPhotosClassByAvailable, setOffersClassByAvailable, setDescriptionClassByAvailable} from '../utils/utils';
-import AbstractView from './abstract-view';
+import SmartView from './smart-view';
 
-const createEventEditTemplate = (point) => {
-  const {type, destination, price, offers, cityList, dateFrom, dateTo} = point;
+const createEventEditTemplate = (data, destinations) => {
+  const {type, destination, price, offers, dateFrom, dateTo} = data;
   const dateStart = dateFrom.format('DD/MM/YY HH:mm');
   const dateEnd = dateTo.format('DD/MM/YY HH:mm');
+
+  const makeCityDatalistTemplate = (destinationsItems) => {
+    const pointCities = [];
+    destinationsItems.forEach((destinationItem) => pointCities.push(`<option value="${destinationItem.name}"></option>`));
+    return pointCities.join('');
+  };
 
   return `<li class="trip-events__item">
     <form class="event event--edit" action="#" method="post">
@@ -74,7 +80,7 @@ const createEventEditTemplate = (point) => {
           </label>
           <input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" value="${destination.name}" list="destination-list-1">
           <datalist id="destination-list-1">
-            ${cityList}
+            ${makeCityDatalistTemplate(destinations)}
           </datalist>
         </div>
 
@@ -91,7 +97,7 @@ const createEventEditTemplate = (point) => {
             <span class="visually-hidden">Price</span>
             &euro;
           </label>
-          <input class="event__input  event__input--price" id="event-price-1" type="text" name="event-price" value="${price}">
+          <input class="event__input  event__input--price" id="event-price-1" type="number" name="event-price" value="${price}" min="0">
         </div>
 
         <button class="event__save-btn  btn  btn--blue" type="submit">Save</button>
@@ -123,17 +129,26 @@ const createEventEditTemplate = (point) => {
   </li>`;
 };
 
-export default class EditCreatePointView extends AbstractView{
-  #point = null;
+export default class EditCreatePointView extends SmartView{
+  #choosedOffers = [];
+  #offers = [];
+  #destinations = [];
 
-  constructor(point) {
+  constructor(point, offers, destinations) {
     super();
-    this.#point = point;
+    this._data = EditCreatePointView.parsePointToData(point);
+    this.#offers = offers;
+    this.#destinations = destinations;
+    this.#setInnerHandlers();
   }
 
   get template() {
-    return createEventEditTemplate(this.#point);
+    return createEventEditTemplate(this._data, this.#destinations);
   }
+
+  #getOffersList = (offers, type) => offers.find((offer) => offer['type'] === type).offers;
+
+  #getDestination = (destinations, destinationName) => (destinations.find((destination) => destination.name === destinationName));
 
   setCloseClickHandler = (callback) => {
     this._callback.closeClick = callback;
@@ -145,12 +160,102 @@ export default class EditCreatePointView extends AbstractView{
     this.element.querySelector('form').addEventListener('submit', this.#formSubmitHandler);
   }
 
-  setChooseOfferHandler = (callback) => {
-    this._callback.chooseOffer = callback;
+  #setInnerHandlers = () => {
+    this.#setTypeInputHandler();
+    this.#setDestinationChangeHandler();
+    this.#setDestinationClickHandler();
+    this.#setPriceInputHandler();
+    this.#setChooseOfferHandler();
+  }
+
+  #setTypeInputHandler = () => {
+    const typeInput = this.element.querySelectorAll('.event__type-input');
+    typeInput.forEach((input) => input.addEventListener('input', this.#typeInputChangeHandler));
+  }
+
+  #setDestinationChangeHandler =() => {
+    this.element.querySelector('.event__input--destination').addEventListener('change', this.#destinationInputChangeHandler);
+  }
+
+  #setDestinationClickHandler =() => {
+    this.element.querySelector('.event__input--destination').addEventListener('click', this.#destinationInputClickHandler);
+  }
+
+  #setPriceInputHandler =() => {
+    this.element.querySelector('.event__input--price').addEventListener('input', this.#priceInputHandler);
+  }
+
+  #setChooseOfferHandler = () => {
     const offerButtons = this.element.querySelectorAll('.event__offer-checkbox');
     if (offerButtons.length > 0) {
       offerButtons.forEach((button) => button.addEventListener('click', this.#offerCheckboxClickHandler));
     }
+  }
+
+  reset = (point) => {
+    this.updateData(EditCreatePointView.parsePointToData(point));
+  }
+
+  resetData = () => {
+    if (this._data.length > 0) {
+      this._data.choosedOffers.length = 0;
+    }
+  }
+
+  restoreHandlers = () => {
+    this.#setInnerHandlers();
+    this.setCloseClickHandler(this._callback.closeClick);
+    this.setSubmitFormHandler(this._callback.submitClick);
+  }
+
+  #typeInputChangeHandler = (evt) => {
+    this.updateData({
+      type: evt.target.value,
+      offers: this.#getOffersList(this.#offers, evt.target.value),
+    });
+  }
+
+  #destinationInputChangeHandler = (evt) => {
+    const datalist = evt.target.list;
+    let optionFound = false;
+    for (let j = 0; j < datalist.options.length; j++) {
+      if (evt.target.value === datalist.options[j].value) {
+        optionFound = true;
+        break;
+      }
+    }
+    if (optionFound) {
+      evt.target.setCustomValidity('');
+      this.updateData({
+        destination: this.#getDestination(this.#destinations, evt.target.value),
+      });
+    } else {
+      evt.target.setCustomValidity('Выберите пункт назначения из возможных вариантов');
+    }
+  }
+
+  #destinationInputClickHandler = (evt) => {
+    evt.target.value = '';
+  }
+
+  #priceInputHandler = (evt) => {
+    if (evt.target.value > 0) {
+      evt.target.setCustomValidity('');
+    } else {
+      evt.target.setCustomValidity('Введите положительное число');
+    }
+  }
+
+  #offerCheckboxClickHandler = (evt) => {
+    const button = evt.target.dataset.id;
+    const offerId = Number(button);
+    if (this.#choosedOffers.length > 0 && this.#choosedOffers.includes(offerId)) {
+      this.#choosedOffers.splice(this.#choosedOffers.indexOf(offerId),1);
+      this._data = {...this._data, choosedOffers: this.#choosedOffers};
+      return;
+    }
+    this.#choosedOffers.push(offerId);
+    this._data = {...this._data, choosedOffers: this.#choosedOffers};
   }
 
   #closeButtonClickHandler = () => {
@@ -159,10 +264,13 @@ export default class EditCreatePointView extends AbstractView{
 
   #formSubmitHandler = (evt) => {
     evt.preventDefault();
-    this._callback.submitClick();
+    this._callback.submitClick(EditCreatePointView.parseDataToPoint(this._data));
   }
 
-  #offerCheckboxClickHandler = (evt) => {
-    this._callback.chooseOffer(evt.target.dataset.id);
+  static parsePointToData = (point) => ({...point})
+
+  static  parseDataToPoint = (data) => {
+    const point = {...data};
+    return point;
   }
 }
