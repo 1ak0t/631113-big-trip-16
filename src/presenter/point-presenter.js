@@ -89,6 +89,7 @@ export default class PointPresenter {
   };
 
   #closeEditForm = () => {
+    this.#editCreatePointComponent.reset(this.#point);
     this.#changeOpenToClosePoint();
   };
 

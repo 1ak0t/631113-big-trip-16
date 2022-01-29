@@ -228,7 +228,7 @@ const getSecondDate = (firstDate) => {
   while (secondDate.isBefore(firstDate)) {
     secondDate = getDate();
   }
-  return secondDate;
+  return secondDate.toDate();
 };
 
 const generatePoint = () => {
@@ -238,7 +238,7 @@ const generatePoint = () => {
     id: nanoid(),
     type: eventType,
     price: getRandomNumberInt(0, 2000),
-    dateFrom: dateFrom,
+    dateFrom: dateFrom.toDate(),
     dateTo: getSecondDate(dateFrom),
     offers: getOffersList(offers, eventType),
     destination: getRandomArrayElement(destinations),
