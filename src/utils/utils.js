@@ -44,7 +44,9 @@ const makePhotosListTemplate = (photos) => {
 };
 
 const getDuration = (dateFrom, dateTo) => {
-  const diffMinutes = dateTo.diff(dateFrom, 'minute');
+  const dateStart = dayjs(dateFrom);
+  const dateEnd = dayjs(dateTo);
+  const diffMinutes = dateEnd.diff(dateStart, 'minute');
   if (diffMinutes < MINUTES_IN_HOUR) {
     return dayjs.duration(diffMinutes, 'minute').format('mm[M]');
   }
@@ -69,10 +71,12 @@ const updateItem = (items, update) => {
 };
 
 const sortByTime = (pointA, pointB) => {
-  if (pointB.dateFrom.isAfter(pointA.dateFrom)) {
+  const startTimeA = dayjs(pointA.dateFrom);
+  const startTimeB = dayjs(pointB.dateFrom);
+  if (startTimeB.isAfter(startTimeA)) {
     return -1;
   }
-  if (pointA.dateFrom.isAfter(pointB.dateFrom)) {
+  if (startTimeA.isAfter(startTimeB)) {
     return 1;
   }
   return  0;
@@ -89,8 +93,12 @@ const sortByPrice = (pointA, pointB) => {
 };
 
 const sortByDuration = (pointA, pointB) => {
-  const durationA = pointA.dateTo.diff(pointA.dateFrom, 'minute');
-  const durationB = pointB.dateTo.diff(pointB.dateFrom, 'minute');
+  const startTimeA = dayjs(pointA.dateFrom);
+  const startTimeB = dayjs(pointB.dateFrom);
+  const endTimeA = dayjs(pointA.dateTo);
+  const endTimeB = dayjs(pointB.dateTo);
+  const durationA = endTimeA.diff(startTimeA, 'minute');
+  const durationB = endTimeB.diff(startTimeB, 'minute');
   if (durationA > durationB) {
     return -1;
   }

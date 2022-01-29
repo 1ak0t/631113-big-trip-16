@@ -1,5 +1,6 @@
 import AbstractView from './abstract-view';
 import {getDuration} from '../utils/utils';
+import dayjs from 'dayjs';
 
 const createEventTemplate = (point) => {
   const {type, destination, price, offers, isFavorite, dateFrom, dateTo, selectedOffers} = point;
@@ -24,16 +25,16 @@ const createEventTemplate = (point) => {
 
   return `<li class="trip-events__item">
     <div class="event">
-      <time class="event__date" datetime="${dateFrom.toISOString()}">${dateFrom.format('D MMM')}</time>
+      <time class="event__date" datetime="${dateFrom}">${dayjs(dateFrom).format('D MMM')}</time>
       <div class="event__type">
         <img class="event__type-icon" width="42" height="42" src="img/icons/${type.toLowerCase()}.png" alt="Event type icon">
       </div>
       <h3 class="event__title">${type} ${destination.name}</h3>
       <div class="event__schedule">
         <p class="event__time">
-          <time class="event__start-time" datetime="${dateFrom.toISOString()}">${dateFrom.format('HH:mm')}</time>
+          <time class="event__start-time" datetime="${dateFrom}">${dayjs(dateFrom).format('HH:mm')}</time>
           &mdash;
-          <time class="event__end-time" datetime="${dateTo.toISOString()}">${dateTo.format('HH:mm')}</time>
+          <time class="event__end-time" datetime="${dateTo}">${dayjs(dateTo).format('HH:mm')}</time>
         </p>
         <p class="event__duration">${getDuration(dateFrom, dateTo)}</p>
       </div>

@@ -1,10 +1,13 @@
 import {makePhotosListTemplate, makeOffersListTemplate, setPhotosClassByAvailable, setOffersClassByAvailable, setDescriptionClassByAvailable} from '../utils/utils';
 import SmartView from './smart-view';
+import flatpickr from 'flatpickr';
+import '../../node_modules/flatpickr/dist/flatpickr.min.css';
+import dayjs from 'dayjs';
 
 const createEventEditTemplate = (data, destinations) => {
   const {type, destination, price, offers, dateFrom, dateTo} = data;
-  const dateStart = dateFrom.format('DD/MM/YY HH:mm');
-  const dateEnd = dateTo.format('DD/MM/YY HH:mm');
+  const startDate = dayjs(dateFrom).format('DD/MM/YY HH:mm');
+  const endDate = dayjs(dateTo).format('DD/MM/YY HH:mm');
 
   const makeCityDatalistTemplate = (destinationsItems) => {
     const pointCities = [];
@@ -52,7 +55,7 @@ const createEventEditTemplate = (data, destinations) => {
               </div>
 
               <div class="event__type-item">
-                <input id="event-type-flight-1" class="event__type-input  visually-hidden" type="radio" name="event-type" value="flight" checked>
+                <input id="event-type-flight-1" class="event__type-input  visually-hidden" type="radio" name="event-type" value="flight">
                 <label class="event__type-label  event__type-label--flight" for="event-type-flight-1">Flight</label>
               </div>
 
@@ -78,7 +81,7 @@ const createEventEditTemplate = (data, destinations) => {
           <label class="event__label  event__type-output" for="event-destination-1">
             ${type}
           </label>
-          <input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" value="${destination.name}" list="destination-list-1">
+          <input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" value="${destination.name}" list="destination-list-1" required>
           <datalist id="destination-list-1">
             ${makeCityDatalistTemplate(destinations)}
           </datalist>
@@ -86,10 +89,10 @@ const createEventEditTemplate = (data, destinations) => {
 
         <div class="event__field-group  event__field-group--time">
           <label class="visually-hidden" for="event-start-time-1">From</label>
-          <input class="event__input  event__input--time" id="event-start-time-1" type="text" name="event-start-time" value="${dateStart}">
+          <input class="event__input  event__input--time" id="event-start-time-1" type="text" name="event-start-time" value="${startDate}">
           &mdash;
           <label class="visually-hidden" for="event-end-time-1">To</label>
-          <input class="event__input  event__input--time" id="event-end-time-1" type="text" name="event-end-time" value="${dateEnd}">
+          <input class="event__input  event__input--time" id="event-end-time-1" type="text" name="event-end-time" value="${endDate}">
         </div>
 
         <div class="event__field-group  event__field-group--price">
@@ -133,6 +136,8 @@ export default class EditCreatePointView extends SmartView{
   #choosedOffers = [];
   #offers = [];
   #destinations = [];
+  #datepickerStart = null;
+  #datepickerEnd = null;
 
   constructor(point, offers, destinations) {
     super();
@@ -140,6 +145,7 @@ export default class EditCreatePointView extends SmartView{
     this.#offers = offers;
     this.#destinations = destinations;
     this.#setInnerHandlers();
+    this.#setInputTypeChecked();
   }
 
   get template() {
@@ -160,12 +166,23 @@ export default class EditCreatePointView extends SmartView{
     this.element.querySelector('form').addEventListener('submit', this.#formSubmitHandler);
   }
 
+  #setInputTypeChecked = () => {
+    const typeInput = this.element.querySelectorAll('.event__type-input');
+    typeInput.forEach((input) => {
+      if (input.value === this._data.type) {
+        input.checked = true;
+      }
+    });
+  }
+
   #setInnerHandlers = () => {
     this.#setTypeInputHandler();
     this.#setDestinationChangeHandler();
     this.#setDestinationClickHandler();
     this.#setPriceInputHandler();
     this.#setChooseOfferHandler();
+    this.#setStartDatePicker();
+    this.#setEndDatePicker();
   }
 
   #setTypeInputHandler = () => {
@@ -182,13 +199,51 @@ export default class EditCreatePointView extends SmartView{
   }
 
   #setPriceInputHandler =() => {
-    this.element.querySelector('.event__input--price').addEventListener('input', this.#priceInputHandler);
+    this.element.querySelector('.event__input--price').addEventListener('change', this.#priceInputHandler);
   }
 
   #setChooseOfferHandler = () => {
     const offerButtons = this.element.querySelectorAll('.event__offer-checkbox');
     if (offerButtons.length > 0) {
       offerButtons.forEach((button) => button.addEventListener('click', this.#offerCheckboxClickHandler));
+    }
+  }
+
+  #setStartDatePicker = () => {
+    this.#datepickerStart = flatpickr(
+      this.element.querySelector('#event-start-time-1'),
+      {
+        dateFormat: 'd/m/y H:i',
+        defaultDate: this._data.dateFrom,
+        onChange: this.#dateFromChangeHandler,
+        enableTime: true,
+      }
+    );
+  }
+
+  #setEndDatePicker = () => {
+    this.#datepickerEnd = flatpickr(
+      this.element.querySelector('#event-end-time-1'),
+      {
+        dateFormat: 'd/m/y H:i',
+        defaultDate: this._data.dateTo,
+        onChange: this.#dateToChangeHandler,
+        enableTime: true,
+      }
+    );
+  }
+
+  removeElement = () => {
+    super.removeElement();
+
+    if (this.#datepickerStart) {
+      this.#datepickerStart.destroy();
+      this.#datepickerStart = null;
+    }
+
+    if (this.#datepickerEnd) {
+      this.#datepickerEnd.destroy();
+      this.#datepickerEnd = null;
     }
   }
 
@@ -208,22 +263,27 @@ export default class EditCreatePointView extends SmartView{
     this.setSubmitFormHandler(this._callback.submitClick);
   }
 
+  restoreInputTypeChecked = () => {
+    this.#setInputTypeChecked();
+  }
+
   #typeInputChangeHandler = (evt) => {
     this.updateData({
       type: evt.target.value,
       offers: this.#getOffersList(this.#offers, evt.target.value),
     });
+    this.#setInputTypeChecked();
   }
 
   #destinationInputChangeHandler = (evt) => {
-    const datalist = evt.target.list;
+    const datalist = evt.target.list.options;
     let optionFound = false;
-    for (let j = 0; j < datalist.options.length; j++) {
-      if (evt.target.value === datalist.options[j].value) {
+    for (const dataItem of datalist) {
+      if (evt.target.value === dataItem.value) {
         optionFound = true;
-        break;
       }
     }
+
     if (optionFound) {
       evt.target.setCustomValidity('');
       this.updateData({
@@ -239,11 +299,9 @@ export default class EditCreatePointView extends SmartView{
   }
 
   #priceInputHandler = (evt) => {
-    if (evt.target.value > 0) {
-      evt.target.setCustomValidity('');
-    } else {
-      evt.target.setCustomValidity('Введите положительное число');
-    }
+    this.updateData({
+      price: evt.target.value,
+    });
   }
 
   #offerCheckboxClickHandler = (evt) => {
@@ -265,6 +323,18 @@ export default class EditCreatePointView extends SmartView{
   #formSubmitHandler = (evt) => {
     evt.preventDefault();
     this._callback.submitClick(EditCreatePointView.parseDataToPoint(this._data));
+  }
+
+  #dateFromChangeHandler = ([userDate]) => {
+    this.updateData({
+      dateFrom: userDate,
+    });
+  }
+
+  #dateToChangeHandler = ([userDate]) => {
+    this.updateData({
+      dateTo: userDate,
+    });
   }
 
   static parsePointToData = (point) => ({...point})
