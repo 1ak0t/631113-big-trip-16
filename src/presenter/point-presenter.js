@@ -1,6 +1,8 @@
 import PointView from '../view/point-view';
 import EditCreatePointView from '../view/edit-create-point-view';
 import {remove, render, RenderPosition, replace} from '../render';
+import {UpdateType, UserAction} from '../utils/consts';
+import {isEqual} from '../utils/utils';
 
 const Mode = {
   DEFAULT: 'DEFAULT',
@@ -40,6 +42,7 @@ export default class PointPresenter {
     this.#pointComponent.setLikeClickHandler(this.#clickLikeButton);
     this.#editCreatePointComponent.setCloseClickHandler(this.#closeEditForm);
     this.#editCreatePointComponent.setSubmitFormHandler(this.#submitForm);
+    this.#editCreatePointComponent.setDeleteClickHandler(this.#handleDeleteClick);
 
     if (prevPointComponent === null || prevEditCreatePointComponent === null) {
       render(this.#pointList, this.#pointComponent, RenderPosition.BEFORE_END);
@@ -72,7 +75,11 @@ export default class PointPresenter {
   }
 
   #clickLikeButton = () => {
-    this.#changeData({...this.#point, isFavorite: !this.#point.isFavorite});
+    this.#changeData(
+      UserAction.UPDATE_POINT,
+      UpdateType.PATCH,
+      {...this.#point, isFavorite: !this.#point.isFavorite}
+    );
   }
 
   #changeOpenToClosePoint = () =>  {
@@ -93,7 +100,21 @@ export default class PointPresenter {
     this.#changeOpenToClosePoint();
   };
 
-  #submitForm = () => {
+  #handleDeleteClick = (point) => {
+    this.#changeData(
+      UserAction.DELETE_POINT,
+      UpdateType.MINOR,
+      point
+    );
+  }
+
+  #submitForm = (point) => {
+    const isMinorUpdate = isEqual(this.#point.dateFrom, point.dateFrom) && isEqual(this.#point.dateTo, point.dateTo) && isEqual(this.#point.price, point.price);
+    this.#changeData(
+      UserAction.UPDATE_POINT,
+      isMinorUpdate ? UpdateType.PATCH: UpdateType.MINOR,
+      point
+    );
     this.#changeOpenToClosePoint();
   };
 

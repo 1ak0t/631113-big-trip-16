@@ -32,8 +32,4 @@ export default class SmartView extends AbstractView {
   restoreHandlers() {
     throw new Error('Abstract method not implemented: restoreHandlers');
   }
-
-  restoreInputTypeChecked() {
-    throw new Error('Abstract method not implemented: restoreInputTypeChecked');
-  }
 }

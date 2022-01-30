@@ -221,7 +221,7 @@ const getPointTypes = (types) => {
   return pointTypes;
 };
 
-const getDate = () => (dayjs().add(getRandomNumberInt(0,10), 'day').add(getRandomNumberInt(0,24), 'hour'));
+const getDate = () => (dayjs().add(getRandomNumberInt(-10,10), 'day').add(getRandomNumberInt(0,24), 'hour'));
 const getSecondDate = (firstDate) => {
   let secondDate = getDate();
 
