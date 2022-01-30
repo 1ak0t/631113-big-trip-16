@@ -166,6 +166,11 @@ export default class EditCreatePointView extends SmartView{
     this.element.querySelector('form').addEventListener('submit', this.#formSubmitHandler);
   }
 
+  setDeleteClickHandler = (callback) => {
+    this._callback.deleteClick = callback;
+    this.element.querySelector('.event__reset-btn').addEventListener('click', this.#deleteButtonClickHandler);
+  }
+
   #setInputTypeChecked = () => {
     const typeInput = this.element.querySelectorAll('.event__type-input');
     typeInput.forEach((input) => {
@@ -183,6 +188,7 @@ export default class EditCreatePointView extends SmartView{
     this.#setChooseOfferHandler();
     this.#setStartDatePicker();
     this.#setEndDatePicker();
+    this.setDeleteClickHandler();
   }
 
   #setTypeInputHandler = () => {
@@ -217,6 +223,7 @@ export default class EditCreatePointView extends SmartView{
         defaultDate: this._data.dateFrom,
         onChange: this.#dateFromChangeHandler,
         enableTime: true,
+        maxDate: this._data.dateTo,
       }
     );
   }
@@ -229,6 +236,7 @@ export default class EditCreatePointView extends SmartView{
         defaultDate: this._data.dateTo,
         onChange: this.#dateToChangeHandler,
         enableTime: true,
+        minDate: this._data.dateFrom,
       }
     );
   }
@@ -281,6 +289,7 @@ export default class EditCreatePointView extends SmartView{
     for (const dataItem of datalist) {
       if (evt.target.value === dataItem.value) {
         optionFound = true;
+        break;
       }
     }
 
@@ -300,7 +309,7 @@ export default class EditCreatePointView extends SmartView{
 
   #priceInputHandler = (evt) => {
     this.updateData({
-      price: evt.target.value,
+      price: Number(evt.target.value),
     });
   }
 
@@ -323,6 +332,10 @@ export default class EditCreatePointView extends SmartView{
   #formSubmitHandler = (evt) => {
     evt.preventDefault();
     this._callback.submitClick(EditCreatePointView.parseDataToPoint(this._data));
+  }
+
+  #deleteButtonClickHandler = () => {
+    this._callback.deleteClick(EditCreatePointView.parseDataToPoint(this._data));
   }
 
   #dateFromChangeHandler = ([userDate]) => {

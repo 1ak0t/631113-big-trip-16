@@ -1,5 +1,6 @@
 import dayjs from 'dayjs';
 import duration from 'dayjs/plugin/duration';
+import {FilterType} from './consts';
 
 const MAX_CITIES_IN_ROUTE = 3;
 const MINUTES_IN_HOUR = 60;
@@ -18,7 +19,8 @@ const replaceWhitespace = (text) => (text.toLowerCase().replace(/ /g,'-'));
 
 const makeOffersListTemplate = (offers) => {
   const pointOffers = [];
-  offers.forEach((offer) => pointOffers.push(`<div class="event__offer-selector">
+  if (offers.length > 0) {
+    offers.forEach((offer) => pointOffers.push(`<div class="event__offer-selector">
         <input class="event__offer-checkbox  visually-hidden" id="event-offer-${replaceWhitespace(offer.title)}" type="checkbox" name="event-offer-${replaceWhitespace(offer.title)}" data-id="${offer.id}">
         <label class="event__offer-label" for="event-offer-${replaceWhitespace(offer.title)}">
           <span class="event__offer-title">${offer.title}</span>
@@ -26,7 +28,13 @@ const makeOffersListTemplate = (offers) => {
           <span class="event__offer-price">${offer.price}</span>
         </label>
       </div>`));
+  }
   return pointOffers.join('');
+};
+
+const isOfferChecked = (offers, checkedId) => {
+  Boolean(offers.find((offer) => offer.id === checkedId));
+
 };
 
 const setOffersClassByAvailable = (offers) => offers.length > 0 ? 'event__section  event__section--offers' : 'event__section  event__section--offers visually-hidden';
@@ -54,20 +62,6 @@ const getDuration = (dateFrom, dateTo) => {
     return dayjs.duration(diffMinutes, 'minute').format('HH[H] mm[M]');
   }
   return dayjs.duration(diffMinutes, 'minute').format('DD[D] HH[H] mm[M]');
-};
-
-const updateItem = (items, update) => {
-  const index = items.findIndex((item) => item.id === update.id);
-
-  if (index === -1) {
-    return items;
-  }
-
-  return [
-    ...items.slice(0, index),
-    update,
-    ...items.slice(index + 1),
-  ];
 };
 
 const sortByTime = (pointA, pointB) => {
@@ -108,4 +102,12 @@ const sortByDuration = (pointA, pointB) => {
   return  0;
 };
 
-export {makePhotosListTemplate, makeOffersListTemplate, setPhotosClassByAvailable, setOffersClassByAvailable,setDescriptionClassByAvailable, updateItem, sortByPrice, sortByDuration, getDuration, sortByTime, getCitiesListOnTopTemplate};
+const filterPoints = {
+  [FilterType.EVERYTHING]: (points) => points,
+  [FilterType.PAST]: (points) => points.filter((point) => dayjs(point.dateFrom).isBefore(dayjs())),
+  [FilterType.FUTURE]: (points) => points.filter((point) => dayjs(point.dateFrom).isAfter(dayjs()) || (dayjs(point.dateFrom).isBefore(dayjs()) && dayjs(point.dateTo).isAfter(dayjs()))),
+};
+
+const isEqual = (dateA, dateB) => dateA === dateB;
+
+export {isOfferChecked, makePhotosListTemplate, makeOffersListTemplate, setPhotosClassByAvailable, setOffersClassByAvailable,setDescriptionClassByAvailable, sortByPrice, sortByDuration, getDuration, sortByTime, getCitiesListOnTopTemplate, isEqual, filterPoints};
