@@ -1,28 +1,23 @@
 import EditCreatePointView from '../view/edit-create-point-view';
 import {remove, render, RenderPosition} from '../render';
 import {UpdateType, UserAction} from '../utils/consts';
-import {nanoid} from 'nanoid';
 import dayjs from 'dayjs';
 
-const BLANK_POINT = {
-  id: nanoid(),
-  type: 'Taxi',
-  price: '',
-  dateFrom: dayjs().toISOString(),
-  dateTo: dayjs().toISOString(),
-  offers: '',
+const nowDate = dayjs().toISOString();
+
+const blankPoint = {
+  type: 'taxi',
+  price: 1,
+  dateFrom: nowDate,
+  dateTo: nowDate,
+  offers: [],
   destination: {
     description: '',
     name: '',
-    pictures: [
-      {
-        src: '',
-        description: '',
-      }
-    ]
+    pictures: []
   }
   ,
-  isFavorite: '',
+  isFavorite: false,
 };
 
 export default class PointNewPresenter {
@@ -42,7 +37,7 @@ export default class PointNewPresenter {
     this.#offers = [...offers];
     this.#destinations = [...destinations];
 
-    this.#editCreatePointComponent = new EditCreatePointView(BLANK_POINT, this.#offers, this.#destinations);
+    this.#editCreatePointComponent = new EditCreatePointView(blankPoint, this.#offers, this.#destinations);
     this.#editCreatePointComponent.setSubmitFormHandler(this.#submitForm);
     this.#editCreatePointComponent.setDeleteClickHandler(this.#handleDeleteClick);
 

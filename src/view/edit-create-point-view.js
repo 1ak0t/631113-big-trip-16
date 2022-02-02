@@ -309,7 +309,7 @@ export default class EditCreatePointView extends SmartView{
 
   #priceInputHandler = (evt) => {
     this.updateData({
-      price: Number(evt.target.value),
+      price: evt.target.valueAsNumber,
     });
   }
 
