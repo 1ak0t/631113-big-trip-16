@@ -6,6 +6,22 @@ const MAX_CITIES_IN_ROUTE = 3;
 const MINUTES_IN_HOUR = 60;
 const MINUTES_IN_DAY = 1440;
 
+const nowDate = dayjs().toISOString();
+const blankPoint = {
+  type: 'taxi',
+  price: 1,
+  dateFrom: nowDate,
+  dateTo: nowDate,
+  offers: [],
+  destination: {
+    description: '',
+    name: '',
+    pictures: []
+  }
+  ,
+  isFavorite: false,
+};
+
 dayjs.extend(duration);
 
 const getCitiesListOnTopTemplate = (cities) => {
@@ -17,11 +33,13 @@ const getCitiesListOnTopTemplate = (cities) => {
 
 const replaceWhitespace = (text) => (text.toLowerCase().replace(/ /g,'-'));
 
-const makeOffersListTemplate = (offers) => {
+const setOfferStatus = (currentsOffer, offers) => offers.some((offer) => currentsOffer.id === offer.id) ? 'checked' : '';
+
+const makeOffersListTemplate = (offers, availableOffers) => {
   const pointOffers = [];
-  if (offers.length > 0) {
-    offers.forEach((offer) => pointOffers.push(`<div class="event__offer-selector">
-        <input class="event__offer-checkbox  visually-hidden" id="event-offer-${replaceWhitespace(offer.title)}" type="checkbox" name="event-offer-${replaceWhitespace(offer.title)}" data-id="${offer.id}">
+  if (availableOffers.length > 0) {
+    availableOffers.forEach((offer) => pointOffers.push(`<div class="event__offer-selector">
+        <input class="event__offer-checkbox  visually-hidden" id="event-offer-${replaceWhitespace(offer.title)}" type="checkbox" name="event-offer-${replaceWhitespace(offer.title)}" data-id="${offer.id}" ${setOfferStatus(offer, offers)}>
         <label class="event__offer-label" for="event-offer-${replaceWhitespace(offer.title)}">
           <span class="event__offer-title">${offer.title}</span>
           &plus;&euro;&nbsp;
@@ -46,10 +64,7 @@ const makePhotosListTemplate = (photos) => {
   }
 };
 
-const getDuration = (dateFrom, dateTo) => {
-  const dateStart = dayjs(dateFrom);
-  const dateEnd = dayjs(dateTo);
-  const diffMinutes = dateEnd.diff(dateStart, 'minute');
+const getFormatedTime = (diffMinutes) => {
   if (diffMinutes < MINUTES_IN_HOUR) {
     return dayjs.duration(diffMinutes, 'minute').format('mm[M]');
   }
@@ -57,6 +72,13 @@ const getDuration = (dateFrom, dateTo) => {
     return dayjs.duration(diffMinutes, 'minute').format('HH[H] mm[M]');
   }
   return dayjs.duration(diffMinutes, 'minute').format('DD[D] HH[H] mm[M]');
+};
+
+const getDuration = (dateFrom, dateTo) => {
+  const dateStart = dayjs(dateFrom);
+  const dateEnd = dayjs(dateTo);
+  const diffMinutes = dateEnd.diff(dateStart, 'minute');
+  return getFormatedTime(diffMinutes);
 };
 
 const sortByTime = (pointA, pointB) => {
@@ -108,4 +130,4 @@ const filterTypeToFilterPoints = {
 
 const isEqual = (dateA, dateB) => dateA === dateB;
 
-export {makePhotosListTemplate, makeOffersListTemplate, setPhotosClassByAvailable, setOffersClassByAvailable,setDescriptionClassByAvailable, sortByPrice, sortByDuration, getDuration, sortByTime, getCitiesListOnTopTemplate, isEqual, filterTypeToFilterPoints, MINUTES_IN_DAY, MINUTES_IN_HOUR};
+export {blankPoint, getFormatedTime, makePhotosListTemplate, makeOffersListTemplate, setPhotosClassByAvailable, setOffersClassByAvailable,setDescriptionClassByAvailable, sortByPrice, sortByDuration, getDuration, sortByTime, getCitiesListOnTopTemplate, isEqual, filterTypeToFilterPoints, MINUTES_IN_DAY, MINUTES_IN_HOUR};

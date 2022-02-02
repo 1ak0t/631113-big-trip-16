@@ -9,6 +9,12 @@ const Mode = {
   EDITING: 'EDITING',
 };
 
+export const State = {
+  SAVING: 'SAVING',
+  DELETING: 'DELETING',
+  ABORTING: 'ABORTING',
+};
+
 export default class PointPresenter {
   #pointList = null;
   #point = null;
@@ -54,7 +60,8 @@ export default class PointPresenter {
     }
 
     if (this.#mode === Mode.EDITING) {
-      replace(this.#editCreatePointComponent, prevEditCreatePointComponent);
+      replace(this.#pointComponent, prevEditCreatePointComponent);
+      this.#mode = Mode.DEFAULT;
     }
 
     remove(prevPointComponent);
@@ -71,6 +78,39 @@ export default class PointPresenter {
     if (this.#mode !== Mode.DEFAULT) {
       this.#editCreatePointComponent.reset(this.#point);
       this.#closeEditForm();
+    }
+  }
+
+  setViewState = (state) => {
+    if (this.#mode === Mode.DEFAULT) {
+      return;
+    }
+
+    const resetFormState = () => {
+      this.#editCreatePointComponent.updateData({
+        isDisabled: false,
+        isSaving: false,
+        isDeleting: false,
+      });
+    };
+
+    switch (state) {
+      case State.SAVING:
+        this.#editCreatePointComponent.updateData({
+          isDisabled: true,
+          isSaving: true,
+        });
+        break;
+      case State.DELETING:
+        this.#editCreatePointComponent.updateData({
+          isDisabled: true,
+          isDeleting: true,
+        });
+        break;
+      case State.ABORTING:
+        this.#pointComponent.shake(resetFormState);
+        this.#editCreatePointComponent.shake(resetFormState);
+        break;
     }
   }
 
@@ -115,7 +155,6 @@ export default class PointPresenter {
       isMinorUpdate ? UpdateType.PATCH: UpdateType.MINOR,
       point
     );
-    this.#changeOpenToClosePoint();
   };
 
   #escKeydownHandler = (evt) => {

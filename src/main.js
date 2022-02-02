@@ -1,6 +1,5 @@
 import {RenderPosition, render, remove} from './render.js';
 import {MenuItem} from './utils/consts';
-import {generatePoint, offers, destinations} from './mock/point.js';
 import TopRouteInfoView from './view/top-route-info-view';
 import MenuView from './view/menu-view';
 import PointsListPresenter from './presenter/points-list-presenter';
@@ -8,14 +7,14 @@ import PointsModel from './model/points-model';
 import FilterModel from './model/filter-model';
 import FilterPresenter from './presenter/filter-presenter';
 import StatisticsView from './view/statistics-view';
-import NewPoint from './view/new-point';
+import NewPointView from './view/new-point-view';
+import ApiService from './api-service';
+import LoadingView from './view/loading-view';
 
-const POINT_COUNT = 10;
+const AUTHORIZATION = 'Basic akjn323kj23j';
+const END_POINT = 'https://16.ecmascript.pages.academy/big-trip/';
 
-const points = Array.from({length: POINT_COUNT},generatePoint);
-
-const pointsModel = new PointsModel();
-pointsModel.points = points;
+const pointsModel = new PointsModel(new ApiService(END_POINT, AUTHORIZATION));
 
 const filterModel = new FilterModel();
 
@@ -24,14 +23,11 @@ const navigationElement = mainTripElement.querySelector('.trip-main__trip-contro
 const filterElement = mainTripElement.querySelector('.trip-controls__filters');
 const tripEventsContainerElement = document.querySelector('.trip-events');
 
+const loadingComponent = new LoadingView();
 const siteMenuComponent = new MenuView();
 const filterPresenter = new FilterPresenter(filterElement, filterModel);
 const pointsListPresenter = new PointsListPresenter(tripEventsContainerElement, pointsModel, filterModel);
-const statisticsComponent = new StatisticsView(pointsModel.points);
-const newPointComponent = new NewPoint();
-
-render(mainTripElement, new TopRouteInfoView(points), RenderPosition.AFTER_BEGIN);
-render(navigationElement, siteMenuComponent, RenderPosition.AFTER_BEGIN);
+let statisticsComponent = null;
 
 const handleSiteMenuClick = (menuItem) => {
   switch (menuItem) {
@@ -39,25 +35,40 @@ const handleSiteMenuClick = (menuItem) => {
       pointsListPresenter.destroy();
       filterPresenter.destroy();
       remove(statisticsComponent);
-      pointsListPresenter.init(offers, destinations);
+      pointsListPresenter.init(pointsModel.offers, pointsModel.destinations);
       filterPresenter.init();
       break;
     case MenuItem.TABLE:
-      pointsListPresenter.init(offers, destinations);
+      pointsListPresenter.init(pointsModel.offers, pointsModel.destinations);
       filterPresenter.init();
       remove(statisticsComponent);
       break;
     case MenuItem.STATS:
       pointsListPresenter.destroy();
       filterPresenter.destroy();
+      statisticsComponent = new StatisticsView(pointsModel.points);
       render(tripEventsContainerElement, statisticsComponent, RenderPosition.AFTER_END);
       statisticsComponent.setCharts();
       break;
   }
 };
 
-siteMenuComponent.setMenuClickHandler(handleSiteMenuClick);
-render(navigationElement, newPointComponent, RenderPosition.AFTER_END);
-newPointComponent.setNewPointClickHandler(handleSiteMenuClick, pointsListPresenter.createPoint);
-filterPresenter.init();
-pointsListPresenter.init(offers, destinations);
+render(tripEventsContainerElement, loadingComponent, RenderPosition.BEFORE_END);
+
+pointsModel.init().finally(() => {
+  const offers = pointsModel.offers;
+  const destinations = pointsModel.destinations;
+  const points = pointsModel.points;
+  remove(loadingComponent);
+  if (pointsModel.points.length > 0) {
+    render(mainTripElement, new TopRouteInfoView(points), RenderPosition.AFTER_BEGIN);
+  }
+  siteMenuComponent.setMenuClickHandler(handleSiteMenuClick);
+  const newPointComponent = new NewPointView();
+  render(navigationElement, newPointComponent, RenderPosition.AFTER_END);
+  render(navigationElement, siteMenuComponent, RenderPosition.AFTER_BEGIN);
+  newPointComponent.setNewPointClickHandler(handleSiteMenuClick, pointsListPresenter.createPoint);
+  filterPresenter.init();
+  pointsListPresenter.init(offers, destinations);
+});
+
