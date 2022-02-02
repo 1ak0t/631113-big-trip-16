@@ -1,24 +1,7 @@
 import EditCreatePointView from '../view/edit-create-point-view';
 import {remove, render, RenderPosition} from '../render';
 import {UpdateType, UserAction} from '../utils/consts';
-import dayjs from 'dayjs';
-
-const nowDate = dayjs().toISOString();
-
-const blankPoint = {
-  type: 'taxi',
-  price: 1,
-  dateFrom: nowDate,
-  dateTo: nowDate,
-  offers: [],
-  destination: {
-    description: '',
-    name: '',
-    pictures: []
-  }
-  ,
-  isFavorite: false,
-};
+import {blankPoint} from '../utils/utils';
 
 export default class PointNewPresenter {
   #pointList = null;
@@ -41,6 +24,8 @@ export default class PointNewPresenter {
     this.#editCreatePointComponent.setSubmitFormHandler(this.#submitForm);
     this.#editCreatePointComponent.setDeleteClickHandler(this.#handleDeleteClick);
 
+    this.#editCreatePointComponent.element.querySelector('.event__reset-btn').textContent = 'Cancel';
+
     render(this.#pointList, this.#editCreatePointComponent, RenderPosition.AFTER_BEGIN);
 
     document.addEventListener('keydown', this.#escKeydownHandler);
@@ -49,6 +34,26 @@ export default class PointNewPresenter {
   destroy = () => {
     document.removeEventListener('keydown', this.#escKeydownHandler);
     remove(this.#editCreatePointComponent);
+    document.querySelector('.trip-main__event-add-btn').disabled = false;
+  }
+
+  setSaving = () => {
+    this.#editCreatePointComponent.updateData({
+      isDisabled: true,
+      isSaving: true,
+    });
+  }
+
+  setAborting = () => {
+    const resetFormState = () => {
+      this.#editCreatePointComponent.updateData({
+        isDisabled: false,
+        isSaving: false,
+        isDeleting: false,
+      });
+    };
+
+    this.#editCreatePointComponent.shake(resetFormState);
   }
 
   #handleDeleteClick = () => {
@@ -61,7 +66,6 @@ export default class PointNewPresenter {
       UpdateType.MINOR,
       point
     );
-    this.destroy();
   };
 
   #escKeydownHandler = (evt) => {

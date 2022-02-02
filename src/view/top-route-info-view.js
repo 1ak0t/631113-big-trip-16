@@ -9,6 +9,9 @@ const createRouteInfoTemplate = (points) => {
   points.forEach((point) => {
     tripCities.push(point.destination.name);
     tripTotalPrice += point.price;
+    point.offers.forEach((offer) => {
+      tripTotalPrice += offer.price;
+    });
   });
 
   return `<section class="trip-main__trip-info  trip-info">
