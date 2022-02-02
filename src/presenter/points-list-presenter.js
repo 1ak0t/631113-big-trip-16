@@ -3,7 +3,7 @@ import PointsListView from '../view/points-list-view';
 import SortView from '../view/sort-view';
 import {remove, render, RenderPosition} from '../render';
 import PointPresenter from './point-presenter';
-import {sortByPrice, sortByDuration, sortByTime, filterPoints} from '../utils/utils';
+import {sortByPrice, sortByDuration, sortByTime, filterTypeToFilterPoints} from '../utils/utils';
 import {FilterType, SortType, UpdateType, UserAction} from '../utils/consts';
 import PointNewPresenter from './point-new-presenter';
 
@@ -29,9 +29,6 @@ export default class PointsListPresenter {
     this.#filterModel = filterModel;
 
     this.#pointNewPresenter = new PointNewPresenter(this.#pointsListComponent, this.#handleViewAction);
-
-    this.#pointsModel.addObserver(this.#handleModelEvent);
-    this.#filterModel.addObserver(this.#handleModelEvent);
   }
 
   get points() {
@@ -40,11 +37,10 @@ export default class PointsListPresenter {
       this.#currentSortType = SortType.DEFAULT;
       remove(this.#sortPointsComponent);
       this.#renderSortComponent();
-
     }
 
     const points = this.#pointsModel.points;
-    const filteredPoints = filterPoints[this.#currentFilter](points);
+    const filteredPoints = filterTypeToFilterPoints[this.#currentFilter](points);
 
     switch (this.#currentSortType) {
       case SortType.DURATION:
@@ -60,6 +56,17 @@ export default class PointsListPresenter {
     this.#offers = [...offers];
     this.#destinations = [...destinations];
     this.#renderPointsListContainer();
+
+    this.#pointsModel.addObserver(this.#handleModelEvent);
+    this.#filterModel.addObserver(this.#handleModelEvent);
+  }
+
+  destroy = () => {
+    remove(this.#pointsListComponent);
+    remove(this.#sortPointsComponent);
+
+    this.#pointsModel.removeObserver(this.#handleModelEvent);
+    this.#filterModel.removeObserver(this.#handleModelEvent);
   }
 
   createPoint = () => {

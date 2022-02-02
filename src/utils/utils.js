@@ -32,11 +32,6 @@ const makeOffersListTemplate = (offers) => {
   return pointOffers.join('');
 };
 
-const isOfferChecked = (offers, checkedId) => {
-  Boolean(offers.find((offer) => offer.id === checkedId));
-
-};
-
 const setOffersClassByAvailable = (offers) => offers.length > 0 ? 'event__section  event__section--offers' : 'event__section  event__section--offers visually-hidden';
 
 const setPhotosClassByAvailable = (photos) => photos.length > 0 ? 'event__photos-container' : 'event__photos-container visually-hidden';
@@ -102,12 +97,15 @@ const sortByDuration = (pointA, pointB) => {
   return  0;
 };
 
-const filterPoints = {
-  [FilterType.EVERYTHING]: (points) => points,
-  [FilterType.PAST]: (points) => points.filter((point) => dayjs(point.dateFrom).isBefore(dayjs())),
-  [FilterType.FUTURE]: (points) => points.filter((point) => dayjs(point.dateFrom).isAfter(dayjs()) || (dayjs(point.dateFrom).isBefore(dayjs()) && dayjs(point.dateTo).isAfter(dayjs()))),
+const filterPointsByPast = (points, dateNow) => points.filter(({ dateFrom }) => dateFrom < dateNow);
+const filterPointsByFuture = (points, dateNow) => points.filter(({ dateFrom, dateTo }) => dateFrom > dateNow || (dateFrom < dateNow && dateTo > dateNow));
+
+const filterTypeToFilterPoints = {
+  [FilterType.EVERYTHING]: (points) => points.slice(),
+  [FilterType.PAST]: (points) => filterPointsByPast(points, Date.now()),
+  [FilterType.FUTURE]: (points) => filterPointsByFuture(points, Date.now()),
 };
 
 const isEqual = (dateA, dateB) => dateA === dateB;
 
-export {isOfferChecked, makePhotosListTemplate, makeOffersListTemplate, setPhotosClassByAvailable, setOffersClassByAvailable,setDescriptionClassByAvailable, sortByPrice, sortByDuration, getDuration, sortByTime, getCitiesListOnTopTemplate, isEqual, filterPoints};
+export {makePhotosListTemplate, makeOffersListTemplate, setPhotosClassByAvailable, setOffersClassByAvailable,setDescriptionClassByAvailable, sortByPrice, sortByDuration, getDuration, sortByTime, getCitiesListOnTopTemplate, isEqual, filterTypeToFilterPoints, MINUTES_IN_DAY, MINUTES_IN_HOUR};

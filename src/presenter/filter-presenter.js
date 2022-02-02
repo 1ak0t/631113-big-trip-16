@@ -1,4 +1,4 @@
-import {render} from '../render';
+import {remove, render} from '../render';
 import FilterView from '../view/filter-view';
 import {RenderPosition} from '../render';
 import {UpdateType} from '../utils/consts';
@@ -16,6 +16,10 @@ export default class FilterPresenter {
   init = () => {
     this.#filterComponent.setFilterTypeChangeHandler(this.#changeFilterType);
     render(this.#filterContainer, this.#filterComponent, RenderPosition.BEFORE_END);
+  }
+
+  destroy = () => {
+    remove(this.#filterComponent);
   }
 
   #changeFilterType = (filterType) => {
