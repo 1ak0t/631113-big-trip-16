@@ -16,7 +16,7 @@ const blankPoint = {
   destination: {
     description: '',
     name: '',
-    pictures: []
+    pictures: [],
   }
   ,
   isFavorite: false,
