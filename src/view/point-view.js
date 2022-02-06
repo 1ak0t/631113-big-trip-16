@@ -3,19 +3,17 @@ import {getDuration} from '../utils/utils';
 import dayjs from 'dayjs';
 
 const createEventTemplate = (point) => {
-  const {type, destination, price, offers, isFavorite, dateFrom, dateTo, selectedOffers} = point;
+  const {type, destination, price, offers, isFavorite, dateFrom, dateTo} = point;
   const createOfferListTemplate = (currentOffers) => {
-    if (selectedOffers) {
+    if (currentOffers) {
       const offerListFragments = [];
       currentOffers.forEach((offer) => {
-        if (selectedOffers.includes(offer.id)){
-          const offerTemplate = `<li class="event__offer">
-          <span class="event__offer-title">${offer.title}</span>
-          &plus;&euro;&nbsp;
-          <span class="event__offer-price">${offer.price}</span>
-          </li>`;
-          offerListFragments.push(offerTemplate);
-        }
+        const offerTemplate = `<li class="event__offer">
+        <span class="event__offer-title">${offer.title}</span>
+        &plus;&euro;&nbsp;
+        <span class="event__offer-price">${offer.price}</span>
+        </li>`;
+        offerListFragments.push(offerTemplate);
       });
       return offerListFragments.join('');
     }

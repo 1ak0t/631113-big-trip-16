@@ -10,6 +10,7 @@ import StatisticsView from './view/statistics-view';
 import NewPointView from './view/new-point-view';
 import ApiService from './api-service';
 import LoadingView from './view/loading-view';
+import TopRouteInfoPresenter from './presenter/top-route-info-presenter';
 
 const AUTHORIZATION = 'Basic akjn323kj23j';
 const END_POINT = 'https://16.ecmascript.pages.academy/big-trip/';
@@ -27,6 +28,7 @@ const loadingComponent = new LoadingView();
 const siteMenuComponent = new MenuView();
 const filterPresenter = new FilterPresenter(filterElement, filterModel);
 const pointsListPresenter = new PointsListPresenter(tripEventsContainerElement, pointsModel, filterModel);
+const topRouteInfoPresenter = new TopRouteInfoPresenter(mainTripElement, pointsModel);
 let statisticsComponent = null;
 
 const handleSiteMenuClick = (menuItem) => {
@@ -61,7 +63,7 @@ pointsModel.init().finally(() => {
   const points = pointsModel.points;
   remove(loadingComponent);
   if (pointsModel.points.length > 0) {
-    render(mainTripElement, new TopRouteInfoView(points), RenderPosition.AFTER_BEGIN);
+    topRouteInfoPresenter.init(points);
   }
   siteMenuComponent.setMenuClickHandler(handleSiteMenuClick);
   const newPointComponent = new NewPointView();
