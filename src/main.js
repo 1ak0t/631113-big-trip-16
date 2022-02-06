@@ -1,6 +1,5 @@
 import {RenderPosition, render, remove} from './render.js';
 import {MenuItem} from './utils/consts';
-import TopRouteInfoView from './view/top-route-info-view';
 import MenuView from './view/menu-view';
 import PointsListPresenter from './presenter/points-list-presenter';
 import PointsModel from './model/points-model';

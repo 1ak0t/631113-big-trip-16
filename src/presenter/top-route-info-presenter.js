@@ -1,6 +1,5 @@
 import {remove, render, RenderPosition} from '../render';
 import TopRouteInfoView from '../view/top-route-info-view';
-import PointsModel from '../model/points-model';
 
 export default class TopRouteInfoPresenter {
   #topRouteInfoContainer = null;
