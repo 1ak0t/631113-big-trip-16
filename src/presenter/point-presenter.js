@@ -150,6 +150,7 @@ export default class PointPresenter {
 
   #submitForm = (point) => {
     const isMinorUpdate = isEqual(this.#point.dateFrom, point.dateFrom) && isEqual(this.#point.dateTo, point.dateTo) && isEqual(this.#point.price, point.price);
+    document.removeEventListener('keydown', this.#escKeydownHandler);
     this.#changeData(
       UserAction.UPDATE_POINT,
       isMinorUpdate ? UpdateType.PATCH: UpdateType.MINOR,

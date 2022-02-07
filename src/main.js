@@ -27,7 +27,6 @@ const loadingComponent = new LoadingView();
 const siteMenuComponent = new MenuView();
 const filterPresenter = new FilterPresenter(filterElement, filterModel);
 const pointsListPresenter = new PointsListPresenter(tripEventsContainerElement, pointsModel, filterModel);
-const topRouteInfoPresenter = new TopRouteInfoPresenter(mainTripElement, pointsModel);
 let statisticsComponent = null;
 
 const handleSiteMenuClick = (menuItem) => {
@@ -38,6 +37,8 @@ const handleSiteMenuClick = (menuItem) => {
       remove(statisticsComponent);
       pointsListPresenter.init(pointsModel.offers, pointsModel.destinations);
       filterPresenter.init();
+      siteMenuComponent.element.querySelector('[data-link-type=table]').classList.add('trip-tabs__btn--active');
+      siteMenuComponent.element.querySelector('[data-link-type=stats]').classList.remove('trip-tabs__btn--active');
       break;
     case MenuItem.TABLE:
       pointsListPresenter.init(pointsModel.offers, pointsModel.destinations);
@@ -59,10 +60,10 @@ render(tripEventsContainerElement, loadingComponent, RenderPosition.BEFORE_END);
 pointsModel.init().finally(() => {
   const offers = pointsModel.offers;
   const destinations = pointsModel.destinations;
-  const points = pointsModel.points;
+  const topRouteInfoPresenter = new TopRouteInfoPresenter(mainTripElement, pointsModel);
   remove(loadingComponent);
   if (pointsModel.points.length > 0) {
-    topRouteInfoPresenter.init(points);
+    topRouteInfoPresenter.init();
   }
   siteMenuComponent.setMenuClickHandler(handleSiteMenuClick);
   const newPointComponent = new NewPointView();

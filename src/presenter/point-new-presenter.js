@@ -25,6 +25,7 @@ export default class PointNewPresenter {
     this.#editCreatePointComponent.setDeleteClickHandler(this.#handleDeleteClick);
 
     this.#editCreatePointComponent.element.querySelector('.event__reset-btn').textContent = 'Cancel';
+    this.#editCreatePointComponent.element.querySelector('.event__rollup-btn').style.display = 'none';
 
     render(this.#pointList, this.#editCreatePointComponent, RenderPosition.AFTER_BEGIN);
 
@@ -66,6 +67,7 @@ export default class PointNewPresenter {
       UpdateType.MINOR,
       point
     );
+    this.destroy();
   };
 
   #escKeydownHandler = (evt) => {

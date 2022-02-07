@@ -3,7 +3,7 @@ import TopRouteInfoView from '../view/top-route-info-view';
 
 export default class TopRouteInfoPresenter {
   #topRouteInfoContainer = null;
-  #topRouteInfoComponent = new TopRouteInfoView();
+  #topRouteInfoComponent = null;
   #pointsModel = null;
 
   constructor(topRouteInfoContainer, pointsModel) {
@@ -11,8 +11,13 @@ export default class TopRouteInfoPresenter {
     this.#pointsModel = pointsModel;
   }
 
-  init = (points) => {
-    render(this.#topRouteInfoContainer, new TopRouteInfoView(points), RenderPosition.AFTER_BEGIN);
+  get points() {
+    return this.#pointsModel.points;
+  }
+
+  init = () => {
+    this.#topRouteInfoComponent = new TopRouteInfoView(this.points);
+    render(this.#topRouteInfoContainer, this.#topRouteInfoComponent, RenderPosition.AFTER_BEGIN);
     this.#pointsModel.addObserver(this.#handlePriceChange);
   }
 
@@ -22,6 +27,6 @@ export default class TopRouteInfoPresenter {
 
   #handlePriceChange = () => {
     this.destroy();
-    this.init(this.#pointsModel.points);
+    this.init();
   }
 }
