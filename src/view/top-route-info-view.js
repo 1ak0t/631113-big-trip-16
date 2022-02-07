@@ -3,10 +3,10 @@ import {getCitiesListOnTopTemplate, sortByTime} from '../utils/utils';
 import dayjs from 'dayjs';
 
 const createRouteInfoTemplate = (points) => {
-  points.sort(sortByTime);
+  const sortPoints = points.slice().sort(sortByTime);
   const tripCities = [];
   let tripTotalPrice = 0;
-  points.forEach((point) => {
+  sortPoints.forEach((point) => {
     tripCities.push(point.destination.name);
     tripTotalPrice += point.price;
     point.offers.forEach((offer) => {

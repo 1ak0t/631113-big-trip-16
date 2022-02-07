@@ -68,6 +68,8 @@ export default class PointsListPresenter {
     remove(this.#sortPointsComponent);
     remove(this.#emptyListComponent);
 
+    this.#clearPointsList();
+
     this.#pointsModel.removeObserver(this.#handleModelEvent);
     this.#filterModel.removeObserver(this.#handleModelEvent);
   }
@@ -75,6 +77,8 @@ export default class PointsListPresenter {
   createPoint = () => {
     this.#currentSortType = SortType.DEFAULT;
     this.#filterModel.setFilter(UpdateType.MINOR, FilterType.EVERYTHING);
+    remove(this.#emptyListComponent);
+    render(this.#pointsListContainer, this.#pointsListComponent, RenderPosition.BEFORE_END);
     this.#pointNewPresenter.init(this.#offers, this.#destinations);
   }
 
@@ -140,7 +144,6 @@ export default class PointsListPresenter {
   }
 
   #renderPointsList = () => {
-
     if (this.points.length === 0) {
       this.#renderEmptyList();
     } else {

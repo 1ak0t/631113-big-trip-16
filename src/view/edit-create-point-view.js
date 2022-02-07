@@ -100,7 +100,7 @@ const createEventEditTemplate = (data, destinations, availableOffers) => {
             <span class="visually-hidden">Price</span>
             &euro;
           </label>
-          <input class="event__input  event__input--price" id="event-price-1" type="number" name="event-price" value="${price}" min="0" ${isDisabled ? 'disabled' : ''}>
+          <input class="event__input  event__input--price" id="event-price-1" type="number" name="event-price" value="${price}" min="1" ${isDisabled ? 'disabled' : ''}>
         </div>
 
         <button class="event__save-btn  btn  btn--blue" type="submit" ${isDisabled ? 'disabled' : ''}>${isSaving ? 'Saving...' : 'Save'}</button>
@@ -189,7 +189,6 @@ export default class EditCreatePointView extends SmartView{
     this.#setChooseOfferHandler();
     this.#setStartDatePicker();
     this.#setEndDatePicker();
-    this.setDeleteClickHandler();
   }
 
   #setTypeInputHandler = () => {
@@ -270,6 +269,7 @@ export default class EditCreatePointView extends SmartView{
     this.#setInnerHandlers();
     this.setCloseClickHandler(this._callback.closeClick);
     this.setSubmitFormHandler(this._callback.submitClick);
+    this.setDeleteClickHandler(this._callback.deleteClick);
   }
 
   restoreInputTypeChecked = () => {
