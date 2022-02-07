@@ -9,7 +9,7 @@ const noPointsTextType = {
 
 const createEmptyListTemplate = (filterType) => `<p class="trip-events__msg">${noPointsTextType[filterType]}</p>`;
 
-export default class ListEmptyView extends AbstractView{
+class ListEmptyView extends AbstractView{
   #filterType = null;
 
   constructor(filterType) {
@@ -21,3 +21,5 @@ export default class ListEmptyView extends AbstractView{
     return createEmptyListTemplate(this.#filterType);
   }
 }
+
+export default ListEmptyView;

@@ -3,7 +3,7 @@ import FilterView from '../view/filter-view';
 import {RenderPosition} from '../render';
 import {UpdateType} from '../utils/consts';
 
-export default class FilterPresenter {
+class FilterPresenter {
   #filterContainer = null;
   #filterComponent = new FilterView();
   #filterModels = null;
@@ -26,3 +26,5 @@ export default class FilterPresenter {
     this.#filterModels.setFilter(UpdateType.MINOR, filterType);
   }
 }
+
+export default FilterPresenter;

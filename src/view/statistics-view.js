@@ -132,7 +132,7 @@ const createStatisticsTemplate = () => (`<section class="statistics">
           </div>
         </section>`);
 
-export default class StatisticsView extends AbstractView {
+class StatisticsView extends AbstractView {
   #data = {};
   #statistics = null;
 
@@ -162,3 +162,5 @@ export default class StatisticsView extends AbstractView {
     renderDurationChart(this.#statistics.types, this.#statistics.durations, timeCtx);
   }
 }
+
+export default StatisticsView;

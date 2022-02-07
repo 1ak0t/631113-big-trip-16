@@ -3,7 +3,7 @@ import {remove, render, RenderPosition} from '../render';
 import {UpdateType, UserAction} from '../utils/consts';
 import {blankPoint} from '../utils/utils';
 
-export default class PointNewPresenter {
+class PointNewPresenter {
   #pointList = null;
   #changeData = null;
   #editCreatePointComponent = null;
@@ -77,3 +77,5 @@ export default class PointNewPresenter {
     }
   };
 }
+
+export default PointNewPresenter;

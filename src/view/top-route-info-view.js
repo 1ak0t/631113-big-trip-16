@@ -27,7 +27,7 @@ const createRouteInfoTemplate = (points) => {
   </section>`;
 };
 
-export default class TopRouteInfoView extends AbstractView{
+class TopRouteInfoView extends AbstractView{
   #points = null;
 
   constructor(points) {
@@ -39,3 +39,5 @@ export default class TopRouteInfoView extends AbstractView{
     return createRouteInfoTemplate(this.#points);
   }
 }
+
+export default TopRouteInfoView;

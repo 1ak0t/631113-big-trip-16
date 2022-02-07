@@ -132,7 +132,7 @@ const createEventEditTemplate = (data, destinations, availableOffers) => {
   </li>`;
 };
 
-export default class EditCreatePointView extends SmartView{
+class EditCreatePointView extends SmartView{
   #availableOffers = [];
   #destinations = [];
   #offers = [];
@@ -366,3 +366,5 @@ export default class EditCreatePointView extends SmartView{
     return point;
   }
 }
+
+export default EditCreatePointView;

@@ -21,7 +21,7 @@ const createFilterTemplate = () => (
   </form>`
 );
 
-export default class FilterView extends AbstractView{
+class FilterView extends AbstractView{
 
   get template() {
     return createFilterTemplate();
@@ -37,3 +37,5 @@ export default class FilterView extends AbstractView{
     this._callback.filterTypeChange(evt.target.value);
   }
 }
+
+export default FilterView;

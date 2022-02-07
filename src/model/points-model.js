@@ -1,7 +1,7 @@
 import AbstractObservable from '../utils/abstract-observable';
 import dayjs from 'dayjs';
 
-export default class PointsModel extends AbstractObservable {
+class PointsModel extends AbstractObservable {
   #apiService = null;
   #points = [];
   #offers = [];
@@ -113,3 +113,5 @@ export default class PointsModel extends AbstractObservable {
     return adaptedTask;
   }
 }
+
+export default PointsModel;

@@ -31,7 +31,7 @@ let statisticsComponent = null;
 
 const handleSiteMenuClick = (menuItem) => {
   switch (menuItem) {
-    case MenuItem.NEW_ITEM:
+    case MenuItem.NEW_ITEM: {
       pointsListPresenter.destroy();
       filterPresenter.destroy();
       remove(statisticsComponent);
@@ -40,18 +40,21 @@ const handleSiteMenuClick = (menuItem) => {
       siteMenuComponent.element.querySelector('[data-link-type=table]').classList.add('trip-tabs__btn--active');
       siteMenuComponent.element.querySelector('[data-link-type=stats]').classList.remove('trip-tabs__btn--active');
       break;
-    case MenuItem.TABLE:
+    }
+    case MenuItem.TABLE: {
       pointsListPresenter.init(pointsModel.offers, pointsModel.destinations);
       filterPresenter.init();
       remove(statisticsComponent);
       break;
-    case MenuItem.STATS:
+    }
+    case MenuItem.STATS: {
       pointsListPresenter.destroy();
       filterPresenter.destroy();
       statisticsComponent = new StatisticsView(pointsModel.points);
       render(tripEventsContainerElement, statisticsComponent, RenderPosition.AFTER_END);
       statisticsComponent.setCharts();
       break;
+    }
   }
 };
 

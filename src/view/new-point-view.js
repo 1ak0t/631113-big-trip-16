@@ -2,7 +2,7 @@ import AbstractView from './abstract-view';
 
 const createNewPointButtonTemplate = () => ('<button class="trip-main__event-add-btn  btn  btn--big  btn--yellow" type="button" data-button-type="new-point">New event</button>');
 
-export default class NewPointView extends AbstractView {
+class NewPointView extends AbstractView {
 
   get template() {
     return createNewPointButtonTemplate();
@@ -21,3 +21,5 @@ export default class NewPointView extends AbstractView {
     evt.target.disabled = true;
   }
 }
+
+export default NewPointView;

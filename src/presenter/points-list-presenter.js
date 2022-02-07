@@ -2,13 +2,14 @@ import ListEmptyView from '../view/list-empty-view';
 import PointsListView from '../view/points-list-view';
 import SortView from '../view/sort-view';
 import {remove, render, RenderPosition} from '../render';
-import PointPresenter, {State as StatePointPresenter} from './point-presenter';
+import PointPresenter from './point-presenter';
 import {sortByPrice, sortByDuration, sortByTime, filterTypeToFilterPoints} from '../utils/utils';
 import {FilterType, SortType, UpdateType, UserAction} from '../utils/consts';
 import PointNewPresenter from './point-new-presenter';
 import LoadingView from '../view/loading-view';
+import {State} from '../utils/consts';
 
-export default class PointsListPresenter {
+class PointsListPresenter {
   #pointsModel = null;
   #pointsListContainer = null;
   #filterModel = null;
@@ -45,10 +46,12 @@ export default class PointsListPresenter {
     const filteredPoints = filterTypeToFilterPoints[this.#currentFilter](points);
 
     switch (this.#currentSortType) {
-      case SortType.DURATION:
+      case SortType.DURATION: {
         return filteredPoints.sort(sortByDuration);
-      case SortType.PRICE:
+      }
+      case SortType.PRICE: {
         return filteredPoints.sort(sortByPrice);
+      }
     }
 
     return filteredPoints.sort(sortByTime);
@@ -84,15 +87,16 @@ export default class PointsListPresenter {
 
   #handleViewAction = async (actionType, updateType, updatedPoint) => {
     switch (actionType) {
-      case UserAction.UPDATE_POINT:
-        this.#pointPresenters.get(updatedPoint.id).setViewState(StatePointPresenter.SAVING);
+      case UserAction.UPDATE_POINT: {
+        this.#pointPresenters.get(updatedPoint.id).setViewState(State.SAVING);
         try {
           await this.#pointsModel.updatePoint(updateType, updatedPoint);
         } catch (error) {
-          this.#pointPresenters.get(updatedPoint.id).setViewState(StatePointPresenter.ABORTING);
+          this.#pointPresenters.get(updatedPoint.id).setViewState(State.ABORTING);
         }
         break;
-      case UserAction.ADD_POINT:
+      }
+      case UserAction.ADD_POINT: {
         this.#pointNewPresenter.setSaving();
         try {
           await this.#pointsModel.addPoint(updateType, updatedPoint);
@@ -100,26 +104,30 @@ export default class PointsListPresenter {
           this.#pointNewPresenter.setAborting();
         }
         break;
-      case UserAction.DELETE_POINT:
-        this.#pointPresenters.get(updatedPoint.id).setViewState(StatePointPresenter.DELETING);
+      }
+      case UserAction.DELETE_POINT: {
+        this.#pointPresenters.get(updatedPoint.id).setViewState(State.DELETING);
         try {
           await this.#pointsModel.deletePoint(updateType, updatedPoint);
         } catch (error) {
-          this.#pointPresenters.get(updatedPoint.id).setViewState(StatePointPresenter.ABORTING);
+          this.#pointPresenters.get(updatedPoint.id).setViewState(State.ABORTING);
         }
         break;
+      }
     }
   }
 
   #handleModelEvent = (updateType, data) => {
     switch (updateType) {
-      case UpdateType.PATCH:
+      case UpdateType.PATCH: {
         this.#pointPresenters.get(data.id).init(data, this.#offers, this.#destinations);
         break;
-      case UpdateType.MINOR:
+      }
+      case UpdateType.MINOR: {
         this.#clearPointsList();
         this.#renderPointsList();
         break;
+      }
     }
   }
 
@@ -178,3 +186,5 @@ export default class PointsListPresenter {
     this.#pointPresenters.clear();
   }
 }
+
+export default PointsListPresenter;

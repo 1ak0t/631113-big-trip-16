@@ -10,7 +10,7 @@ const createTopMenuTemplate = () => (
     </div>`
 );
 
-export default class MenuView extends AbstractView{
+class MenuView extends AbstractView{
   get template() {
     return createTopMenuTemplate();
   }
@@ -33,3 +33,5 @@ export default class MenuView extends AbstractView{
     this._callback.menuClick(evt.target.dataset.linkType);
   }
 }
+
+export default MenuView;

@@ -56,7 +56,7 @@ const createEventTemplate = (point) => {
   </li>`;
 };
 
-export default class PointView extends AbstractView{
+class PointView extends AbstractView{
   #point = null;
 
   constructor(point) {
@@ -86,3 +86,5 @@ export default class PointView extends AbstractView{
     this._callback.likeClick();
   }
 }
+
+export default PointView;

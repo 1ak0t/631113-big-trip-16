@@ -1,7 +1,7 @@
 import {remove, render, RenderPosition} from '../render';
 import TopRouteInfoView from '../view/top-route-info-view';
 
-export default class TopRouteInfoPresenter {
+class TopRouteInfoPresenter {
   #topRouteInfoContainer = null;
   #topRouteInfoComponent = null;
   #pointsModel = null;
@@ -30,3 +30,5 @@ export default class TopRouteInfoPresenter {
     this.init();
   }
 }
+
+export default TopRouteInfoPresenter;

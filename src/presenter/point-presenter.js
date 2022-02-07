@@ -3,19 +3,14 @@ import EditCreatePointView from '../view/edit-create-point-view';
 import {remove, render, RenderPosition, replace} from '../render';
 import {UpdateType, UserAction} from '../utils/consts';
 import {isEqual} from '../utils/utils';
+import {State} from '../utils/consts';
 
 const Mode = {
   DEFAULT: 'DEFAULT',
   EDITING: 'EDITING',
 };
 
-export const State = {
-  SAVING: 'SAVING',
-  DELETING: 'DELETING',
-  ABORTING: 'ABORTING',
-};
-
-export default class PointPresenter {
+class PointPresenter {
   #pointList = null;
   #point = null;
   #changeData = null;
@@ -95,22 +90,25 @@ export default class PointPresenter {
     };
 
     switch (state) {
-      case State.SAVING:
+      case State.SAVING: {
         this.#editCreatePointComponent.updateData({
           isDisabled: true,
           isSaving: true,
         });
         break;
-      case State.DELETING:
+      }
+      case State.DELETING: {
         this.#editCreatePointComponent.updateData({
           isDisabled: true,
           isDeleting: true,
         });
         break;
-      case State.ABORTING:
+      }
+      case State.ABORTING: {
         this.#pointComponent.shake(resetFormState);
         this.#editCreatePointComponent.shake(resetFormState);
         break;
+      }
     }
   }
 
@@ -166,3 +164,5 @@ export default class PointPresenter {
     }
   };
 }
+
+export default PointPresenter;

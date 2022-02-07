@@ -30,7 +30,7 @@ const createSortBlockTemplate = () => (
   </form>`
 );
 
-export default class SortView extends AbstractView{
+class SortView extends AbstractView{
   get template() {
     return createSortBlockTemplate();
   }
@@ -47,3 +47,5 @@ export default class SortView extends AbstractView{
     this._callback.sortTypeChange(evt.target.dataset.sortType);
   }
 }
+
+export default SortView;
